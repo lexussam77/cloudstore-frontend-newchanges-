@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "CloudStore",
-    "slug": "CloudStore",
+    "slug": "NCloudStore",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/cloudstore-logo.png",
