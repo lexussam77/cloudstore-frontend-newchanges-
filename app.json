@@ -1,0 +1,59 @@
+{
+  "expo": {
+    "name": "CloudStore",
+    "slug": "CloudStore",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/cloudstore-logo.png",
+    "userInterfaceStyle": "dark",
+    "newArchEnabled": true,
+    "scheme": "ncloudstore",
+    "splash": {
+      "image": "./assets/cloudstore-logo.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#0F0F0F",
+      "dark": {
+        "image": "./assets/cloudstore-logo.png",
+        "resizeMode": "contain",
+        "backgroundColor": "#0F0F0F"
+      }
+    },
+    "ios": {
+      "supportsTablet": true,
+      "userInterfaceStyle": "dark",
+      "infoPlist": {
+        "NSCameraUsageDescription": "This app needs access to camera to scan documents."
+      }
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/cloudstore-logo.png",
+        "backgroundColor": "#0F0F0F"
+      },
+      "edgeToEdgeEnabled": true,
+      "package": "com.lexus.cloudstore",
+      "userInterfaceStyle": "dark",
+      "permissions": [
+        "android.permission.CAMERA",
+        "android.permission.WRITE_EXTERNAL_STORAGE",
+        "android.permission.READ_EXTERNAL_STORAGE"
+      ]
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "plugins": [
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Allow CloudStore to access your camera to scan documents."
+        }
+      ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "72a6d53e-f411-463b-b69c-7e67507e254d"
+      }
+    }
+  }
+}
