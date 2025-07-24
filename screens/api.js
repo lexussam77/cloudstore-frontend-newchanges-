@@ -3,8 +3,8 @@ import { notify } from './notificationHandler';
 
 export const API_BASE_URL =
   Platform.OS === 'web'
-    ? 'http://10.162.93.13:8080/api'
-    : 'http://10.162.93.13:8080/api'; // Your computer's IP address
+    ? 'https://cloustore-backend.onrender.com/api'
+    : 'https://cloustore-backend.onrender.com/api'; // Updated backend base URL
 
 // Helper for robust fetch
 async function robustFetch(url, options = {}) {
