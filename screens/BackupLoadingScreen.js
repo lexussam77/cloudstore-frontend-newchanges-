@@ -1,11 +1,15 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { View, Text, StyleSheet, Animated, ActivityIndicator } from 'react-native';
 import { useTheme } from '../theme/ThemeContext';
+import { useFonts, Inter_400Regular, Inter_700Bold } from '@expo-google-fonts/inter';
 
 export default function BackupLoadingScreen({ navigation }) {
+  let [fontsLoaded] = useFonts({ Inter_400Regular, Inter_700Bold });
   const { theme } = useTheme();
   const [progress, setProgress] = useState(0);
   const anim = useRef(new Animated.Value(0)).current;
+
+  if (!fontsLoaded) return null;
 
   useEffect(() => {
     let percent = 0;
@@ -24,13 +28,13 @@ export default function BackupLoadingScreen({ navigation }) {
 
   return (
     <View style={[styles.container, { backgroundColor: theme.background }]}>
-      <Text style={[styles.header, { color: theme.primary }]}>Backing up your photos…</Text>
+      <Text style={[styles.header, { color: theme.primary, fontFamily: 'Inter_700Bold' }]}>Backing up your photos…</Text>
       <ActivityIndicator size="large" color={theme.primary} style={{ marginBottom: 32 }} />
       <View style={[styles.progressBarBg, { backgroundColor: theme.secondaryDark }]}>
         <Animated.View style={[styles.progressBarFill, { backgroundColor: theme.primary, width: anim.interpolate({ inputRange: [0, 1], outputRange: ['0%', '100%'] }) }]} />
       </View>
-      <Text style={[styles.progressText, { color: theme.primary }]}>{Math.round(progress * 100)}%</Text>
-      <Text style={[styles.info, { color: theme.textSecondary }]}>Uploading your photos to the cloud. This may take a while…</Text>
+      <Text style={[styles.progressText, { color: theme.primary, fontFamily: 'Inter_700Bold' }]}>{Math.round(progress * 100)}%</Text>
+      <Text style={[styles.info, { color: theme.textSecondary, fontFamily: 'Inter_400Regular' }]}>Uploading your photos to the cloud. This may take a while…</Text>
     </View>
   );
 }
@@ -44,7 +48,6 @@ const styles = StyleSheet.create({
   },
   header: {
     fontSize: 24,
-    fontWeight: 'bold',
     marginBottom: 18,
     textAlign: 'center',
   },
@@ -61,7 +64,6 @@ const styles = StyleSheet.create({
   },
   progressText: {
     fontSize: 18,
-    fontWeight: 'bold',
     marginBottom: 18,
   },
   info: {

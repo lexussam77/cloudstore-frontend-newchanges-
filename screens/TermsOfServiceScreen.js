@@ -6,24 +6,18 @@ import { BlurView } from 'expo-blur';
 import { useFonts, Inter_400Regular, Inter_700Bold } from '@expo-google-fonts/inter';
 
 export default function TermsOfServiceScreen({ navigation }) {
-  const { theme } = useTheme();
+  const { theme, constants } = useTheme();
   const fadeAnim = useRef(new Animated.Value(0)).current;
   let [fontsLoaded] = useFonts({ Inter_400Regular, Inter_700Bold });
   useEffect(() => {
     Animated.timing(fadeAnim, { toValue: 1, duration: 400, useNativeDriver: true }).start();
   }, []);
   if (!fontsLoaded) return null;
-  const DEEP_BLUE_GRADIENT = ['#0a0f1c', '#12203a', '#1a2a4f'];
-  const GLASS_BG_DEEP = 'rgba(20,40,80,0.32)';
-  const GLASS_BORDER = 'rgba(255,255,255,0.10)';
-  const WHITE = '#fff';
-  const LIGHT_TEXT = '#e0e6f0';
-  const BLUE_ACCENT = '#2979FF';
   return (
-    <LinearGradient colors={DEEP_BLUE_GRADIENT} style={{ flex: 1 }}>
+    <LinearGradient colors={constants.gradient} style={{ flex: 1 }}>
       <ScrollView contentContainerStyle={{ paddingVertical: 32, paddingHorizontal: 8 }} showsVerticalScrollIndicator={false}>
         <Animated.View style={{ opacity: fadeAnim }}>
-          <Text style={{ fontFamily: 'Inter_700Bold', fontSize: 26, color: WHITE, textAlign: 'center', marginBottom: 18, letterSpacing: 0.1 }}>Terms of Service</Text>
+          <Text style={{ fontFamily: 'Inter_700Bold', fontSize: 26, color: constants.primaryText, textAlign: 'center', marginBottom: 18, letterSpacing: 0.1 }}>Terms of Service</Text>
           {[{
             header: null,
             text: 'Welcome to CloudStore! Please read these Terms of Service ("Terms") carefully before using our app. By accessing or using CloudStore, you agree to be bound by these Terms.'
@@ -35,13 +29,13 @@ export default function TermsOfServiceScreen({ navigation }) {
           { header: '5. Changes', text: 'We may update these Terms from time to time. We will notify you of significant changes.' },
           { header: '6. Contact', text: 'If you have questions, contact us at support@cloudstore.com.' }
           ].map((section, idx) => (
-            <BlurView key={idx} intensity={80} tint="dark" style={{ backgroundColor: GLASS_BG_DEEP, borderRadius: 22, borderWidth: 1, borderColor: GLASS_BORDER, marginBottom: 18, padding: 18, shadowColor: '#000', shadowOpacity: 0.10, shadowRadius: 8, shadowOffset: { width: 0, height: 4 }, elevation: 4 }}>
-              {section.header && <Text style={{ fontFamily: 'Inter_700Bold', fontSize: 17, color: WHITE, marginBottom: 6 }}>{section.header}</Text>}
-              <Text style={{ fontFamily: 'Inter_400Regular', fontSize: 16, color: LIGHT_TEXT, marginBottom: 0 }}>{section.text}</Text>
+            <BlurView key={idx} intensity={80} tint="dark" style={{ backgroundColor: constants.glassBg, borderRadius: 22, borderWidth: 1, borderColor: constants.glassBorder, marginBottom: 18, padding: 18, shadowColor: '#000', shadowOpacity: 0.10, shadowRadius: 8, shadowOffset: { width: 0, height: 4 }, elevation: 4 }}>
+              {section.header && <Text style={{ fontFamily: 'Inter_700Bold', fontSize: 17, color: constants.primaryText, marginBottom: 6 }}>{section.header}</Text>}
+              <Text style={{ fontFamily: 'Inter_400Regular', fontSize: 16, color: constants.secondaryText, marginBottom: 0 }}>{section.text}</Text>
             </BlurView>
           ))}
-          <TouchableOpacity style={{ borderRadius: 16, paddingVertical: 14, paddingHorizontal: 32, alignSelf: 'center', width: '100%', marginTop: 10, marginBottom: 10, backgroundColor: BLUE_ACCENT, shadowOpacity: 0.10, shadowRadius: 8, shadowOffset: { width: 0, height: 2 }, elevation: 2 }} onPress={() => navigation.goBack()}>
-            <Text style={{ color: WHITE, fontFamily: 'Inter_700Bold', fontSize: 16, textAlign: 'center', letterSpacing: 0.1 }}>Back</Text>
+          <TouchableOpacity style={{ borderRadius: 16, paddingVertical: 14, paddingHorizontal: 32, alignSelf: 'center', width: '100%', marginTop: 10, marginBottom: 10, backgroundColor: constants.accent, shadowOpacity: 0.10, shadowRadius: 8, shadowOffset: { width: 0, height: 2 }, elevation: 2 }} onPress={() => navigation.goBack()}>
+            <Text style={{ color: constants.primaryText, fontFamily: 'Inter_700Bold', fontSize: 16, textAlign: 'center', letterSpacing: 0.1 }}>Back</Text>
           </TouchableOpacity>
         </Animated.View>
       </ScrollView>

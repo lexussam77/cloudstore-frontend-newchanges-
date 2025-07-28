@@ -18,8 +18,8 @@ function getFileIcon(name) {
   return 'file-text';
 }
 
-export default function FileItem({ item, onMenuPress, onPress, onStarPress }) {
-  const { theme } = useTheme();
+export default function FileItem({ item, onMenuPress, onPress, onStarPress, hideActions = false, showCompressedBadge = false }) {
+  const { theme, constants } = useTheme();
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const starScaleAnim = useRef(new Animated.Value(1)).current;
   
@@ -49,68 +49,167 @@ export default function FileItem({ item, onMenuPress, onPress, onStarPress }) {
     onStarPress();
   };
 
-  // Determine if this is a compressed file
+  // Determine file type and properties
   const isCompressed = item.name && item.name.includes('_compressed');
   const isImage = item.name && ['jpg', 'jpeg', 'png', 'gif', 'webp'].includes(item.name.split('.').pop().toLowerCase());
   const isVideo = item.name && ['mp4', 'mov', 'avi', 'webm', 'mkv'].includes(item.name.split('.').pop().toLowerCase());
   const isFavorited = item.favourite || item.favorites;
-  // Choose vibrant color for compressed files
-  const compressedBg = isCompressed ? '#e0f2fe' : theme.secondaryLight;
-  const compressedIcon = isCompressed ? '#0ea5e9' : theme.primary;
+
+  // Modern icon background colors based on file type
+  const getIconStyle = () => {
+    if (isCompressed) return { bg: 'rgba(29, 155, 240, 0.15)', color: constants.accent };
+    if (isImage) return { bg: 'rgba(34, 197, 94, 0.15)', color: '#22c55e' };
+    if (isVideo) return { bg: 'rgba(239, 68, 68, 0.15)', color: '#ef4444' };
+    return { bg: 'rgba(156, 163, 175, 0.15)', color: constants.secondaryText };
+  };
+
+  const iconStyle = getIconStyle();
 
   let [fontsLoaded] = useFonts({ Inter_400Regular, Inter_700Bold });
   if (!fontsLoaded) return null;
 
   return (
     <Animated.View style={{ opacity: fadeAnim, width: '100%' }}>
-      <BlurView intensity={90} tint="dark" style={{
-        backgroundColor: 'rgba(20,40,80,0.32)',
-        borderRadius: 14, // reduced from 22
-        borderWidth: 1.5,
-        borderColor: 'rgba(255,255,255,0.10)',
-        paddingVertical: 8, // reduced
-        paddingHorizontal: 10, // slightly reduced
-        width: '95%',
-        alignSelf: 'center',
-        marginHorizontal: 0,
-        marginVertical: 4, // reduced
-        flexDirection: 'row',
-        alignItems: 'center',
-        overflow: 'hidden',
-        // Removed shadowColor, shadowOpacity, shadowRadius, shadowOffset, elevation for no glow
-      }}>
-        <TouchableOpacity style={{ flexDirection: 'row', alignItems: 'center', flex: 1 }} onPress={onPress} activeOpacity={0.8}>
-          <View style={{ width: 44, height: 44, borderRadius: 12, backgroundColor: compressedBg, alignItems: 'center', justifyContent: 'center', overflow: 'hidden', marginRight: 12 }}>
+      <TouchableOpacity
+        style={{
+          backgroundColor: constants.glassBg,
+          borderRadius: 18,
+          borderWidth: 1,
+          borderColor: constants.glassBorder,
+          paddingVertical: 16,
+          paddingHorizontal: 20,
+          marginHorizontal: 16,
+          marginVertical: 4,
+          flexDirection: 'row',
+          alignItems: 'center',
+          shadowColor: '#000',
+          shadowOpacity: 0.08,
+          shadowRadius: 12,
+          shadowOffset: { width: 0, height: 4 },
+          elevation: 3,
+        }}
+        onPress={onPress}
+        activeOpacity={0.8}
+      >
+        {/* File Icon */}
+        <View style={{
+          width: 48,
+          height: 48,
+          borderRadius: 14,
+          backgroundColor: iconStyle.bg,
+          alignItems: 'center',
+          justifyContent: 'center',
+          marginRight: 16,
+          borderWidth: 1,
+          borderColor: iconStyle.color + '30'
+        }}>
           {isImage && item.url ? (
-              <Image source={{ uri: item.url }} style={{ width: 44, height: 44, borderRadius: 12, resizeMode: 'cover' }} />
-          ) : isVideo && item.url ? (
-              <Feather name="film" size={28} color={compressedIcon} />
+            <Image source={{ uri: item.url }} style={{ width: 48, height: 48, borderRadius: 14, resizeMode: 'cover' }} />
           ) : (
-              <Feather name={getFileIcon(item.name)} size={28} color={compressedIcon} />
+            <Feather name={getFileIcon(item.name)} size={24} color={iconStyle.color} />
           )}
         </View>
-          <View style={{ flex: 1 }}>
-            <Text style={{ fontFamily: 'Inter_700Bold', fontSize: 16, color: theme.text, marginBottom: 2 }} numberOfLines={1}>{item.name}</Text>
-            <Text style={{ fontFamily: 'Inter_400Regular', fontSize: 13, color: theme.textSecondary }} numberOfLines={1}>{item.modifiedAt ? new Date(item.modifiedAt).toLocaleString() : ''} {item.size ? `• ${item.size}` : ''}</Text>
-        </View>
-        </TouchableOpacity>
-        <Animated.View style={{ transform: [{ scale: starScaleAnim }] }}>
-          <TouchableOpacity 
-            style={{ padding: 6, borderRadius: 20, marginRight: 2, backgroundColor: 'rgba(255,255,255,0.08)' }} 
-            onPress={handleStarPress} 
-            activeOpacity={0.7}
+
+        {/* File Info */}
+        <View style={{ flex: 1, justifyContent: 'center', paddingRight: 12 }}>
+          <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 4 }}>
+            <Text
+              style={{
+                fontFamily: 'Inter_700Bold',
+                fontSize: 16,
+                color: constants.primaryText,
+                letterSpacing: -0.2,
+                flex: 1
+              }}
+              numberOfLines={1}
+            >
+              {item.name}
+            </Text>
+            {showCompressedBadge && (
+              <View style={{
+                backgroundColor: '#22c55e',
+                borderRadius: 6,
+                paddingHorizontal: 8,
+                paddingVertical: 3,
+                marginLeft: 8,
+              }}>
+                <Text style={{
+                  fontFamily: 'Inter_700Bold',
+                  fontSize: 9,
+                  color: '#ffffff',
+                  letterSpacing: 0.5,
+                }}>
+                  COMPRESSED
+                </Text>
+              </View>
+            )}
+          </View>
+          <Text
+            style={{
+              fontFamily: 'Inter_400Regular',
+              fontSize: 13,
+              color: constants.secondaryText,
+              letterSpacing: -0.1,
+              opacity: 0.9
+            }}
+            numberOfLines={1}
           >
-            <Feather 
-              name={isFavorited ? "star" : "star"} 
-              size={20} 
-              color={isFavorited ? "#fbbf24" : theme.textTertiary} 
-            />
-          </TouchableOpacity>
-        </Animated.View>
-        <TouchableOpacity style={{ padding: 6, borderRadius: 20, backgroundColor: 'rgba(255,255,255,0.08)', marginLeft: 2 }} onPress={onMenuPress} activeOpacity={0.7}>
-          <Feather name="more-vertical" size={22} color={theme.textSecondary} />
-        </TouchableOpacity>
-      </BlurView>
+            {item.size ? `${(item.size / 1024).toFixed(1)} KB` : 'Unknown size'} • {item.modifiedAt ? new Date(item.modifiedAt).toLocaleDateString() : 'Recently added'}
+          </Text>
+        </View>
+
+        {/* Action Buttons */}
+        {!hideActions && (
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
+            <Animated.View style={{ transform: [{ scale: starScaleAnim }] }}>
+              <TouchableOpacity
+                style={{
+                  padding: 10,
+                  borderRadius: 14,
+                  backgroundColor: isFavorited ? 'rgba(251, 191, 36, 0.15)' : constants.glassBg,
+                  borderWidth: 1.5,
+                  borderColor: isFavorited ? 'rgba(251, 191, 36, 0.4)' : constants.glassBorder,
+                  shadowColor: '#000',
+                  shadowOpacity: 0.1,
+                  shadowRadius: 4,
+                  shadowOffset: { width: 0, height: 2 },
+                  elevation: 2,
+                }}
+                onPress={handleStarPress}
+                activeOpacity={0.8}
+              >
+                <Feather
+                  name={isFavorited ? "star" : "star"}
+                  size={16}
+                  color={isFavorited ? "#fbbf24" : constants.secondaryText}
+                />
+              </TouchableOpacity>
+            </Animated.View>
+
+            <TouchableOpacity
+              style={{
+                padding: 10,
+                borderRadius: 14,
+                backgroundColor: constants.glassBg,
+                borderWidth: 1.5,
+                borderColor: constants.glassBorder,
+                shadowColor: '#000',
+                shadowOpacity: 0.1,
+                shadowRadius: 4,
+                shadowOffset: { width: 0, height: 2 },
+                elevation: 2,
+              }}
+              onPress={(e) => {
+                e.stopPropagation();
+                onMenuPress && onMenuPress();
+              }}
+              activeOpacity={0.8}
+            >
+              <Feather name="more-vertical" size={16} color={constants.secondaryText} />
+            </TouchableOpacity>
+          </View>
+        )}
+      </TouchableOpacity>
     </Animated.View>
   );
 }

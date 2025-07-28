@@ -1,43 +1,152 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTheme } from '../theme/ThemeContext';
 import { LinearGradient } from 'expo-linear-gradient';
 import { BlurView } from 'expo-blur';
 import { useFonts, Inter_400Regular, Inter_700Bold } from '@expo-google-fonts/inter';
+import Feather from 'react-native-vector-icons/Feather';
+
+
 
 export default function PrivacyPolicyScreen({ navigation }) {
-  const { theme } = useTheme();
+  const { theme, constants } = useTheme();
   let [fontsLoaded] = useFonts({ Inter_400Regular, Inter_700Bold });
   if (!fontsLoaded) return null;
-  const DEEP_BLUE_GRADIENT = ['#0a0f1c', '#12203a', '#1a2a4f'];
-  const GLASS_BG_DEEP = 'rgba(20,40,80,0.32)';
-  const GLASS_BORDER = 'rgba(255,255,255,0.10)';
-  const WHITE = '#fff';
-  const LIGHT_TEXT = '#e0e6f0';
-  const BLUE_ACCENT = '#2979FF';
+
   return (
-    <LinearGradient colors={DEEP_BLUE_GRADIENT} style={{ flex: 1 }}>
-      <ScrollView contentContainerStyle={{ paddingVertical: 32, paddingHorizontal: 8 }} showsVerticalScrollIndicator={false}>
-        <Text style={{ fontFamily: 'Inter_700Bold', fontSize: 26, color: WHITE, textAlign: 'center', marginBottom: 18 }}>Privacy Policy</Text>
-        {[{
-          header: null,
-          text: 'Your privacy is important to us. This Privacy Policy explains how CloudStore collects, uses, and protects your information.'
-        },
-        { header: '1. What We Collect', text: 'We collect your name, email, and files you upload. We may also collect usage data to improve our service.' },
-        { header: '2. How We Use Your Data', text: 'We use your data to provide and improve CloudStore, communicate with you, and keep your account secure. We do not sell your personal information.' },
-        { header: '3. Your Rights', text: 'You can access, update, or delete your data at any time. Contact us to exercise your rights.' },
-        { header: '4. Security', text: 'We use industry-standard security to protect your data. However, no system is 100% secure.' },
-        { header: '5. Contact', text: 'If you have questions, contact us at privacy@cloudstore.com.' }
-        ].map((section, idx) => (
-          <BlurView key={idx} intensity={80} tint="dark" style={{ backgroundColor: GLASS_BG_DEEP, borderRadius: 22, borderWidth: 1, borderColor: GLASS_BORDER, marginBottom: 18, padding: 18, shadowColor: '#000', shadowOpacity: 0.10, shadowRadius: 8, shadowOffset: { width: 0, height: 4 }, elevation: 4 }}>
-            {section.header && <Text style={{ fontFamily: 'Inter_700Bold', fontSize: 17, color: WHITE, marginBottom: 6 }}>{section.header}</Text>}
-            <Text style={{ fontFamily: 'Inter_400Regular', fontSize: 16, color: LIGHT_TEXT, marginBottom: 0 }}>{section.text}</Text>
-          </BlurView>
-        ))}
-        <TouchableOpacity style={{ borderRadius: 16, paddingVertical: 14, paddingHorizontal: 32, alignSelf: 'center', width: '100%', marginTop: 10, marginBottom: 10, backgroundColor: BLUE_ACCENT, shadowOpacity: 0.10, shadowRadius: 8, shadowOffset: { width: 0, height: 2 }, elevation: 2 }} onPress={() => navigation.goBack()}>
-          <Text style={{ color: WHITE, fontFamily: 'Inter_700Bold', fontSize: 16, textAlign: 'center' }}>Back</Text>
+    <LinearGradient colors={constants.gradient} style={{ flex: 1 }}>
+      <SafeAreaView style={{ flex: 1 }}>
+        <TouchableOpacity
+          style={{
+            position: 'absolute',
+            top: 38,
+            left: 18,
+            zIndex: 10,
+            backgroundColor: constants.glassBg,
+            borderRadius: 18,
+            padding: 8
+          }}
+          onPress={() => navigation.goBack()}
+          activeOpacity={0.8}
+        >
+          <Feather name="arrow-left" size={22} color={constants.primaryText} />
         </TouchableOpacity>
-      </ScrollView>
+
+        <ScrollView
+          contentContainerStyle={{ paddingBottom: 80, paddingTop: 8, paddingHorizontal: 16 }}
+          showsVerticalScrollIndicator={false}
+        >
+          {/* Header Section */}
+          <View style={{ alignItems: 'center', marginTop: 24, marginBottom: 32 }}>
+            <View style={{
+              backgroundColor: constants.glassBg,
+              borderRadius: 20,
+              padding: 16,
+              marginBottom: 16,
+              borderWidth: 1,
+              borderColor: constants.glassBorder
+            }}>
+              <Feather name="shield" size={32} color={constants.accent} />
+            </View>
+            <Text style={{
+              fontFamily: 'Inter_700Bold',
+              fontSize: 26,
+              color: constants.primaryText,
+              letterSpacing: 0.2,
+              textAlign: 'center'
+            }}>
+              Privacy Policy
+            </Text>
+            <Text style={{
+              fontFamily: 'Inter_400Regular',
+              fontSize: 15,
+              color: constants.secondaryText,
+              marginTop: 6,
+              textAlign: 'center',
+              maxWidth: 320
+            }}>
+              Your privacy and data protection are our priority.
+            </Text>
+          </View>
+          {/* Privacy Policy Sections */}
+          {[{
+            header: null,
+            text: 'Your privacy is important to us. This Privacy Policy explains how CloudStore collects, uses, and protects your information.',
+            icon: 'info'
+          },
+          {
+            header: '1. What We Collect',
+            text: 'We collect your name, email, and files you upload. We may also collect usage data to improve our service.',
+            icon: 'database'
+          },
+          {
+            header: '2. How We Use Your Data',
+            text: 'We use your data to provide and improve CloudStore, communicate with you, and keep your account secure. We do not sell your personal information.',
+            icon: 'settings'
+          },
+          {
+            header: '3. Your Rights',
+            text: 'You can access, update, or delete your data at any time. Contact us to exercise your rights.',
+            icon: 'user-check'
+          },
+          {
+            header: '4. Security',
+            text: 'We use industry-standard security to protect your data. However, no system is 100% secure.',
+            icon: 'lock'
+          },
+          {
+            header: '5. Contact',
+            text: 'If you have questions, contact us at privacy@cloudstore.com.',
+            icon: 'mail'
+          }
+          ].map((section, idx) => (
+            <View
+              key={idx}
+              style={{
+                backgroundColor: constants.glassBg,
+                borderRadius: 16,
+                padding: 20,
+                marginBottom: 16,
+                borderWidth: 1,
+                borderColor: constants.glassBorder,
+                flexDirection: 'row',
+                alignItems: 'flex-start',
+              }}
+            >
+              <View style={{
+                backgroundColor: constants.accent + '20',
+                borderRadius: 12,
+                padding: 12,
+                marginRight: 16,
+                marginTop: 2,
+              }}>
+                <Feather name={section.icon} size={18} color={constants.accent} />
+              </View>
+              <View style={{ flex: 1 }}>
+                {section.header && (
+                  <Text style={{
+                    fontFamily: 'Inter_700Bold',
+                    fontSize: 17,
+                    color: constants.primaryText,
+                    marginBottom: 8
+                  }}>
+                    {section.header}
+                  </Text>
+                )}
+                <Text style={{
+                  fontFamily: 'Inter_400Regular',
+                  fontSize: 15,
+                  color: constants.secondaryText,
+                  lineHeight: 22
+                }}>
+                  {section.text}
+                </Text>
+              </View>
+            </View>
+          ))}
+        </ScrollView>
+      </SafeAreaView>
     </LinearGradient>
   );
 }
@@ -45,49 +154,5 @@ export default function PrivacyPolicyScreen({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 24,
   },
-  header: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    marginBottom: 18,
-    textAlign: 'center',
-  },
-  text: {
-    fontSize: 16,
-    marginBottom: 32,
-    fontWeight: 'bold',
-    fontFamily: 'System',
-  },
-  button: {
-    borderRadius: 14,
-    paddingVertical: 14,
-    paddingHorizontal: 32,
-    alignSelf: 'center',
-  },
-  buttonText: {
-    fontWeight: 'bold',
-    fontSize: 16,
-    fontFamily: 'System',
-  },
-  sectionHeader: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginTop: 18,
-    marginBottom: 6,
-    fontFamily: 'System',
-  },
-  card: {
-    borderRadius: 18,
-    padding: 18,
-    marginBottom: 16,
-    shadowOpacity: 0.04,
-    shadowRadius: 6,
-    shadowOffset: { width: 0, height: 2 },
-    elevation: 1,
-  },
-  scrollContent: {
-    paddingVertical: 24,
-    paddingHorizontal: 8,
-  },
-}); 
+});

@@ -14,7 +14,7 @@ function formatTime(iso) {
 }
 
 export default function NotificationScreen({ navigation }) {
-  const { theme } = useTheme();
+  const { theme, constants } = useTheme();
   const { notifications, markAllRead, deleteNotification, clearAllNotifications } = useNotification();
 
   React.useEffect(() => {
@@ -23,17 +23,14 @@ export default function NotificationScreen({ navigation }) {
 
   const renderRightActions = (id) => (
     <TouchableOpacity style={styles.deleteBtn} onPress={() => deleteNotification(id)}>
-      <Feather name="trash-2" size={20} color="#fff" />
+      <Feather name="trash-2" size={20} color={constants.primaryText} />
     </TouchableOpacity>
   );
 
-  const DEEP_BLUE_GRADIENT = ['#0a0f1c', '#12203a', '#1a2a4f'];
-
   return (
-    <View style={{ flex: 1 }}>
-      <LinearGradient colors={DEEP_BLUE_GRADIENT} style={StyleSheet.absoluteFill} />
-      <View style={[styles.container, { backgroundColor: 'transparent' }]}> 
-        <Text style={[styles.header, { color: theme.primary, fontFamily: 'Inter_700Bold' }]}>Notifications</Text>
+    <View style={{ flex: 1, backgroundColor: theme.background }}>
+      <View style={[styles.container, { backgroundColor: 'transparent' }]}>
+        <Text style={[styles.header, { color: constants.primaryText, fontFamily: 'Inter_700Bold' }]}>Notifications</Text>
         <FlatList
           data={notifications}
           keyExtractor={(item, index) => (item.id ? item.id.toString() : index.toString())}
@@ -44,38 +41,36 @@ export default function NotificationScreen({ navigation }) {
             >
               <BlurView intensity={90} tint="dark" style={styles.notificationGlass}>
                 <View style={styles.row}>
-                  <Feather name={item.icon || 'info'} size={22} color={item.type === 'success' ? '#059669' : item.type === 'error' ? '#dc2626' : theme.primary} style={{ marginRight: 10 }} />
-                  <Text style={[styles.message, { color: theme.text, fontFamily: 'Inter_700Bold' }]}>{item.message}</Text>
+                  <Feather name={item.icon || 'info'} size={22} color={item.type === 'success' ? '#059669' : item.type === 'error' ? '#dc2626' : constants.accent} style={{ marginRight: 10 }} />
+                  <Text style={[styles.message, { color: constants.primaryText, fontFamily: 'Inter_700Bold' }]}>{item.message}</Text>
                   {!item.read && <View style={styles.blueTick} />}
                 </View>
                 <View style={styles.metaRow}>
-                  <Text style={[styles.type, { color: item.type === 'success' ? '#059669' : item.type === 'error' ? '#dc2626' : theme.primary, fontFamily: 'Inter_700Bold' }]}>{item.type}</Text>
-                  <Text style={[styles.time, { color: theme.textSecondary, fontFamily: 'Inter_700Bold' }]}>{formatTime(item.timestamp)}</Text>
+                  <Text style={[styles.type, { color: item.type === 'success' ? '#059669' : item.type === 'error' ? '#dc2626' : constants.accent, fontFamily: 'Inter_700Bold' }]}>{item.type}</Text>
+                  <Text style={[styles.time, { color: constants.secondaryText, fontFamily: 'Inter_700Bold' }]}>{formatTime(item.timestamp)}</Text>
                 </View>
               </BlurView>
             </Swipeable>
           )}
-          ListEmptyComponent={<Text style={{ color: theme.textSecondary, textAlign: 'center', marginTop: 40, fontFamily: 'Inter_400Regular' }}>No notifications yet.</Text>}
+          ListEmptyComponent={<Text style={{ color: constants.secondaryText, textAlign: 'center', marginTop: 40, fontFamily: 'Inter_400Regular' }}>No notifications yet.</Text>}
           contentContainerStyle={{ flexGrow: 1 }}
         />
         {notifications.length > 0 ? (
           <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', gap: 18, marginTop: 18 }}>
-            <BlurView intensity={70} tint="dark" style={{ borderRadius: 22, overflow: 'hidden' }}>
-              <TouchableOpacity style={[styles.clearAllBtnGlass, { marginTop: 0 }]} onPress={clearAllNotifications} activeOpacity={0.85}>
-                <Feather name="trash-2" size={18} color="#fff" style={{ marginRight: 6 }} />
-                <Text style={{ color: '#fff', fontFamily: 'Inter_700Bold', fontSize: 16 }}>Clear All</Text>
-              </TouchableOpacity>
-            </BlurView>
+            <TouchableOpacity style={[styles.clearAllBtnGlass, { marginTop: 0, backgroundColor: constants.accent, borderRadius: 22 }]} onPress={clearAllNotifications} activeOpacity={0.85}>
+              <Feather name="trash-2" size={18} color={constants.primaryText} style={{ marginRight: 6 }} />
+              <Text style={{ color: constants.primaryText, fontFamily: 'Inter_700Bold', fontSize: 16 }}>Clear All</Text>
+            </TouchableOpacity>
             <BlurView intensity={70} tint="dark" style={{ borderRadius: 22, overflow: 'hidden' }}>
               <TouchableOpacity style={[styles.closeBtnGlass, { marginTop: 0 }]} onPress={() => navigation.goBack()} activeOpacity={0.85}>
-                <Text style={{ color: theme.primary, fontFamily: 'Inter_700Bold', fontSize: 16 }}>Close</Text>
+                <Text style={{ color: constants.accent, fontFamily: 'Inter_700Bold', fontSize: 16 }}>Close</Text>
               </TouchableOpacity>
             </BlurView>
           </View>
         ) : (
           <BlurView intensity={70} tint="dark" style={{ borderRadius: 22, overflow: 'hidden', alignSelf: 'center', marginTop: 18 }}>
             <TouchableOpacity style={[styles.closeBtnGlass, { marginTop: 0 }]} onPress={() => navigation.goBack()} activeOpacity={0.85}>
-              <Text style={{ color: theme.primary, fontFamily: 'Inter_700Bold', fontSize: 16 }}>Close</Text>
+              <Text style={{ color: constants.accent, fontFamily: 'Inter_700Bold', fontSize: 16 }}>Close</Text>
             </TouchableOpacity>
           </BlurView>
         )}

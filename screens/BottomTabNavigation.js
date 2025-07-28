@@ -1,5 +1,6 @@
-import React, { useState, useRef } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, SafeAreaView, Animated } from 'react-native';
+import React, { useState, useRef, useEffect } from 'react';
+import { View, Text, TouchableOpacity, StyleSheet, Animated, Dimensions } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import HomeScreen from './HomeScreen';
 import FilesScreen from './FilesScreen';
 import PhotosScreen from './PhotosScreen';
@@ -7,45 +8,62 @@ import AccountScreen from './AccountScreen';
 import CompressionScreen from './CompressionScreen';
 import Feather from 'react-native-vector-icons/Feather';
 import { useTheme } from '../theme/ThemeContext';
-import { LinearGradient } from 'expo-linear-gradient';
+import { BlurView } from 'expo-blur';
 
 const TABS = [
   { key: 'Home', label: 'Home', icon: 'home' },
   { key: 'Files', label: 'Files', icon: 'file' },
-  { key: 'Compression', label: 'Compression', icon: 'package' },
-  { key: 'Photos', label: 'Photos', icon: 'image' },
-  { key: 'Account', label: 'Account', icon: 'user' },
+  { key: 'Compression', label: 'Compress', icon: 'package' },
+  { key: 'Photos', label: 'Media', icon: 'image' },
+  { key: 'Account', label: 'Profile', icon: 'user' },
 ];
 
-const NAV_GRADIENT = ['#0a0f1c', '#12203a', '#1a2a4f'];
+const { width } = Dimensions.get('window');
 
 export default function BottomTabNavigation({ navigation }) {
-  const { theme } = useTheme();
+  const { theme, constants } = useTheme();
   const [activeTab, setActiveTab] = useState('Home');
-  const [pressedTab, setPressedTab] = useState(null);
 
-  // Animation values for each tab
-  const tabAnim = {};
+  // Simple scale animations for Twitter X style
+  const scaleAnimations = {};
+
   TABS.forEach(tab => {
-    tabAnim[tab.key] = useRef(new Animated.Value(0)).current;
+    scaleAnimations[tab.key] = useRef(new Animated.Value(1)).current;
   });
 
-  const handleTabPressIn = (tab) => {
-    setPressedTab(tab.key);
-    Animated.spring(tabAnim[tab.key], {
-      toValue: 1,
-      useNativeDriver: true,
-      speed: 20,
-      bounciness: 8,
-    }).start();
-  };
-  const handleTabPressOut = (tab) => {
-    Animated.spring(tabAnim[tab.key], {
-      toValue: 0,
-      useNativeDriver: true,
-      speed: 20,
-      bounciness: 8,
-    }).start(() => setPressedTab(null));
+  useEffect(() => {
+    // Simple scale animation for active tab
+    TABS.forEach(tab => {
+      const isActive = tab.key === activeTab;
+      Animated.spring(scaleAnimations[tab.key], {
+        toValue: isActive ? 1.05 : 1,
+        useNativeDriver: true,
+        tension: 300,
+        friction: 20,
+      }).start();
+    });
+  }, [activeTab]);
+
+  const handleTabPress = (tab) => {
+    if (activeTab !== tab.key) {
+      setActiveTab(tab.key);
+
+      // Quick press animation - Twitter X style
+      Animated.sequence([
+        Animated.spring(scaleAnimations[tab.key], {
+          toValue: 0.95,
+          useNativeDriver: true,
+          tension: 400,
+          friction: 15,
+        }),
+        Animated.spring(scaleAnimations[tab.key], {
+          toValue: 1.05,
+          useNativeDriver: true,
+          tension: 400,
+          friction: 15,
+        }),
+      ]).start();
+    }
   };
 
   let ScreenComponent;
@@ -67,43 +85,46 @@ export default function BottomTabNavigation({ navigation }) {
       ScreenComponent = HomeScreen;
   }
 
-  const handleTabPress = (tab) => {
-    setActiveTab(tab.key);
-  };
-
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: theme.background }]}>
       {/* Main Screen Content */}
       <View style={[styles.content, { pointerEvents: 'box-none' }]}>
         <ScreenComponent />
       </View>
-      {/* Bottom Tab Bar */}
-      <View style={styles.tabBarContainer}>
-        <LinearGradient
-          colors={NAV_GRADIENT}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 0 }}
-          style={styles.tabBarGradient}
-        >
-          {TABS.map((tab) => {
+
+      {/* Twitter X Style Bottom Tab Bar */}
+      <View style={[styles.tabBarContainer, { backgroundColor: theme.background }]}>
+        <View style={[styles.tabBarContent, { borderTopColor: theme.border }]}>
+          {/* Tab Buttons */}
+          {TABS.map((tab, index) => {
             const isActive = activeTab === tab.key;
+
             return (
               <TouchableOpacity
                 key={tab.key}
                 style={styles.tabButton}
-                onPress={() => setActiveTab(tab.key)}
-                activeOpacity={0.8}
+                onPress={() => handleTabPress(tab)}
+                activeOpacity={0.6}
               >
-                <Feather
-                  name={tab.icon}
-                  size={isActive ? 30 : 26}
-                  color={isActive ? '#2979FF' : '#fff'}
-                  style={isActive ? styles.activeIcon : styles.inactiveIcon}
-                />
+                <Animated.View
+                  style={[
+                    styles.tabIconContainer,
+                    {
+                      transform: [{ scale: scaleAnimations[tab.key] }],
+                    },
+                  ]}
+                >
+                  <Feather
+                    name={tab.icon}
+                    size={26}
+                    color={isActive ? theme.primary : '#FFFFFF'}
+                    strokeWidth={isActive ? 3 : 2.5}
+                  />
+                </Animated.View>
               </TouchableOpacity>
             );
           })}
-        </LinearGradient>
+        </View>
       </View>
     </SafeAreaView>
   );
@@ -113,59 +134,38 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  topBar: {
-    height: 50,
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: 15,
-    borderBottomWidth: 1,
-    top: 15,
-  },
-  topBarTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    fontFamily: 'System',
-    flex: 1,
-    textAlign: 'center',
-  },
-
   content: {
     flex: 1,
-    // pointerEvents: 'box-none', // uncomment if touch issues occur
   },
   tabBarContainer: {
     position: 'absolute',
     left: 0,
     right: 0,
     bottom: 0,
-    height: 70,
-    shadowColor: '#000',
-    shadowOpacity: 0.15,
-    shadowRadius: 12,
-    shadowOffset: { width: 0, height: -2 },
-    elevation: 20, // increased for overlay
-    zIndex: 100, // ensure always on top
+    height: 84, // Twitter X style height
+    zIndex: 100,
   },
-  tabBarGradient: {
+  tabBarContent: {
     flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-around',
-    borderTopLeftRadius: 32,
-    borderTopRightRadius: 32,
-    overflow: 'hidden',
+    paddingTop: 8,
+    paddingBottom: 20, // Account for safe area
+    paddingHorizontal: 16,
+    borderTopWidth: 0.5, // Subtle top border like Twitter X
   },
   tabButton: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    paddingVertical: 10,
+    paddingVertical: 12,
+    paddingHorizontal: 8,
   },
-  activeIcon: {
-    // Optionally add a glow or shadow for the active icon
-    textShadowColor: '#2979FF44',
-    textShadowOffset: { width: 0, height: 2 },
-    textShadowRadius: 8,
+  tabIconContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: 32,
+    height: 32,
   },
-  inactiveIcon: {},
 });

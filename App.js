@@ -3,6 +3,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import BottomTabNavigation from './screens/BottomTabNavigation';
 import { Image, View } from 'react-native';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import SettingsScreen from './screens/SettingsScreen';
 import HelpScreen from './screens/HelpScreen';
@@ -62,7 +63,7 @@ function AppNavigator() {
     return <SplashScreen />;
   }
   return (
-    <Stack.Navigator screenOptions={{ headerShown: false }} initialRouteName={jwt ? 'MainTabs' : 'Auth'}>
+    <Stack.Navigator screenOptions={{ headerShown: false }} initialRouteName={jwt ? 'MainTabs' : 'Onboarding'}>
       {jwt ? (
         <>
           <Stack.Screen name="MainTabs" component={BottomTabNavigation} />
@@ -98,18 +99,20 @@ function AppNavigator() {
 
 export default function App() {
   return (
-    <PremiumProvider>
-      <GestureHandlerRootView style={{ flex: 1 }}>
-        <ThemeProvider>
-          <AuthProvider>
-            <NotificationProvider>
-              <NavigationContainer>
-                <AppNavigator />
-              </NavigationContainer>
-            </NotificationProvider>
-          </AuthProvider>
-        </ThemeProvider>
-      </GestureHandlerRootView>
-    </PremiumProvider>
+    <SafeAreaProvider>
+      <PremiumProvider>
+        <GestureHandlerRootView style={{ flex: 1 }}>
+          <ThemeProvider>
+            <AuthProvider>
+              <NotificationProvider>
+                <NavigationContainer>
+                  <AppNavigator />
+                </NavigationContainer>
+              </NotificationProvider>
+            </AuthProvider>
+          </ThemeProvider>
+        </GestureHandlerRootView>
+      </PremiumProvider>
+    </SafeAreaProvider>
   );
 }

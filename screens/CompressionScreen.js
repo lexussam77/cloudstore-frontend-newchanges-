@@ -6,7 +6,7 @@ import Feather from 'react-native-vector-icons/Feather';
 import FileItem from './FileItem';
 import { useTheme } from '../theme/ThemeContext';
 import { useNavigation } from '@react-navigation/native';
-import HappyStudentBro from '../assets/images/pngs/Happy student-bro.png';
+
 import * as FileSystem from 'expo-file-system';
 import { LinearGradient } from 'expo-linear-gradient';
 import { BlurView } from 'expo-blur';
@@ -57,7 +57,7 @@ async function uploadCompressedToCloudinaryAndRegister(token, compressedFile, fo
 }
 
 export default function CompressionScreen() {
-  const { theme } = useTheme();
+  const { theme, constants } = useTheme();
   const [files, setFiles] = useState([]);
   const [selectedFiles, setSelectedFiles] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -77,11 +77,7 @@ export default function CompressionScreen() {
   const [showErrorModal, setShowErrorModal] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
 
-  const DEEP_BLUE_GRADIENT = ['#0a0f1c', '#12203a', '#1a2a4f'];
-  const GLASS_BG_DEEP = 'rgba(20,40,80,0.32)';
-  const GLASS_BORDER = 'rgba(255,255,255,0.10)';
-  const WHITE = '#fff';
-  const BLUE_ACCENT = '#2979FF';
+  // Constants moved to theme system
 
   useEffect(() => {
     fetchFiles();
@@ -196,7 +192,7 @@ export default function CompressionScreen() {
                       paddingHorizontal: 12,
                       marginHorizontal: 3,
                       marginBottom: 2,
-                      backgroundColor: compressionSettings.quality === q ? BLUE_ACCENT : 'rgba(255,255,255,0.10)',
+                      backgroundColor: compressionSettings.quality === q ? constants.accent : 'rgba(255,255,255,0.10)',
                       borderWidth: 1.2,
                       borderColor: compressionSettings.quality === q ? '#fff' : 'rgba(255,255,255,0.18)',
                       shadowColor: compressionSettings.quality === q ? '#2979FF' : 'transparent',
@@ -228,7 +224,7 @@ export default function CompressionScreen() {
                       paddingHorizontal: 12,
                       marginHorizontal: 3,
                       marginBottom: 2,
-                      backgroundColor: compressionSettings.format === fmt ? BLUE_ACCENT : 'rgba(255,255,255,0.10)',
+                      backgroundColor: compressionSettings.format === fmt ? constants.accent : 'rgba(255,255,255,0.10)',
                       borderWidth: 1.2,
                       borderColor: compressionSettings.format === fmt ? '#fff' : 'rgba(255,255,255,0.18)',
                       shadowColor: compressionSettings.format === fmt ? '#2979FF' : 'transparent',
@@ -385,110 +381,367 @@ export default function CompressionScreen() {
   }
 
   return (
-    <LinearGradient colors={DEEP_BLUE_GRADIENT} style={{ flex: 1 }}>
-      <ScrollView contentContainerStyle={{ padding: 24 }} showsVerticalScrollIndicator={false}>
+    <View style={{ flex: 1, backgroundColor: theme.background }}>
+      <ScrollView contentContainerStyle={{ padding: 24, paddingBottom: 100 }} showsVerticalScrollIndicator={false}>
         {/* Bold, Inter_700Bold description */}
-        <Text style={{ fontFamily: 'Inter_700Bold', fontSize: 16, color: WHITE, marginBottom: 18, textAlign: 'center' }}>
+        <Text style={{ fontFamily: 'Inter_700Bold', fontSize: 16, color: constants.primaryText, marginBottom: 18, textAlign: 'center' }}>
           Compress files to save space and upload faster.
         </Text>
-        {/* Full-width image with rounded corners */}
-        <View style={{ alignItems: 'center', marginBottom: 18 }}>
-          <Image source={HappyStudentBro} style={{ width: '100%', height: 160, borderRadius: 22 }} resizeMode="cover" />
-      </View>
-        {/* Stats Section */}
-        <BlurView intensity={90} tint="dark" style={{ backgroundColor: GLASS_BG_DEEP, borderRadius: 28, borderWidth: 1.5, borderColor: GLASS_BORDER, paddingVertical: 12, paddingHorizontal: 12, width: '100%', marginBottom: 14, shadowColor: '#000', shadowOpacity: 0.18, shadowRadius: 24, shadowOffset: { width: 0, height: 12 }, elevation: 12, overflow: 'hidden', justifyContent: 'center' }}>
-          <Text style={{ fontFamily: 'Inter_700Bold', fontSize: 17, color: WHITE, marginBottom: 14, textAlign: 'center' }}>Your Cloud Analytics</Text>
-          <View style={{ flexDirection: 'row', gap: 12, width: '100%', marginBottom: 12 }}>
-            <BlurView intensity={80} tint="dark" style={{ flex: 1, borderRadius: 18, padding: 16, alignItems: 'center', marginHorizontal: 2, shadowColor: '#000', shadowOpacity: 0.10, shadowRadius: 8, shadowOffset: { width: 0, height: 2 }, elevation: 2 }}>
-            <Feather name="file" size={22} color="#2563eb" />
-              <Text style={{ fontFamily: 'Inter_700Bold', fontSize: 16, color: WHITE, marginTop: 4 }}>{totalFiles}</Text>
-              <Text style={{ fontFamily: 'Inter_400Regular', fontSize: 12, color: WHITE, marginTop: 2, textAlign: 'center' }}>Total Files</Text>
-            </BlurView>
-            <BlurView intensity={80} tint="dark" style={{ flex: 1, borderRadius: 18, padding: 16, alignItems: 'center', marginHorizontal: 2, shadowColor: '#000', shadowOpacity: 0.10, shadowRadius: 8, shadowOffset: { width: 0, height: 2 }, elevation: 2 }}>
-            <Feather name="archive" size={22} color="#22c55e" />
-              <Text style={{ fontFamily: 'Inter_700Bold', fontSize: 16, color: WHITE, marginTop: 4 }}>{compressedFilesCount}</Text>
-              <Text style={{ fontFamily: 'Inter_400Regular', fontSize: 12, color: WHITE, marginTop: 2, textAlign: 'center' }}>Compressed Files</Text>
-            </BlurView>
+
+        {/* Enhanced Storage Analytics */}
+        <View style={{
+          backgroundColor: constants.glassBg,
+          borderRadius: 24,
+          borderWidth: 1,
+          borderColor: constants.glassBorder,
+          padding: 20,
+          marginBottom: 20,
+          shadowColor: '#000',
+          shadowOpacity: 0.1,
+          shadowRadius: 12,
+          shadowOffset: { width: 0, height: 4 },
+          elevation: 4
+        }}>
+          <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 20 }}>
+            <View style={{
+              backgroundColor: constants.accent + '20',
+              borderRadius: 12,
+              padding: 10,
+              marginRight: 12,
+            }}>
+              <Feather name="bar-chart-2" size={24} color={constants.accent} />
+            </View>
+            <Text style={{
+              fontFamily: 'Inter_700Bold',
+              fontSize: 20,
+              color: constants.primaryText,
+              letterSpacing: -0.3
+            }}>
+              Storage Analytics
+            </Text>
           </View>
-          <View style={{ flexDirection: 'row', gap: 12, width: '100%' }}>
-            <BlurView intensity={80} tint="dark" style={{ flex: 1, borderRadius: 18, padding: 16, alignItems: 'center', marginHorizontal: 2, shadowColor: '#000', shadowOpacity: 0.10, shadowRadius: 8, shadowOffset: { width: 0, height: 2 }, elevation: 2 }}>
-            <Feather name="database" size={22} color="#a21caf" />
-              <Text style={{ fontFamily: 'Inter_700Bold', fontSize: 16, color: WHITE, marginTop: 4 }}>{formatBytes(totalSize)}</Text>
-              <Text style={{ fontFamily: 'Inter_400Regular', fontSize: 12, color: WHITE, marginTop: 2, textAlign: 'center' }}>Total Storage</Text>
-            </BlurView>
-            <BlurView intensity={80} tint="dark" style={{ flex: 1, borderRadius: 18, padding: 16, alignItems: 'center', marginHorizontal: 2, shadowColor: '#000', shadowOpacity: 0.10, shadowRadius: 8, shadowOffset: { width: 0, height: 2 }, elevation: 2 }}>
-            <Feather name="trending-down" size={22} color="#f59e42" />
-              <Text style={{ fontFamily: 'Inter_700Bold', fontSize: 16, color: WHITE, marginTop: 4 }}>{formatBytes(spaceSaved)}</Text>
-              <Text style={{ fontFamily: 'Inter_400Regular', fontSize: 12, color: WHITE, marginTop: 2, textAlign: 'center' }}>Est. Space Saved</Text>
-            </BlurView>
+
+          <View style={{ flexDirection: 'row', gap: 12, marginBottom: 16 }}>
+            <View style={{
+              flex: 1,
+              backgroundColor: constants.glassBg,
+              borderRadius: 16,
+              padding: 16,
+              alignItems: 'center',
+              borderWidth: 1,
+              borderColor: constants.glassBorder
+            }}>
+              <View style={{
+                backgroundColor: '#3b82f6' + '20',
+                borderRadius: 10,
+                padding: 8,
+                marginBottom: 8,
+              }}>
+                <Feather name="file" size={20} color="#3b82f6" />
+              </View>
+              <Text style={{
+                fontFamily: 'Inter_700Bold',
+                fontSize: 18,
+                color: constants.primaryText,
+                marginBottom: 4
+              }}>
+                {totalFiles}
+              </Text>
+              <Text style={{
+                fontFamily: 'Inter_400Regular',
+                fontSize: 12,
+                color: constants.secondaryText,
+                textAlign: 'center'
+              }}>
+                Total Files
+              </Text>
+            </View>
+
+            <View style={{
+              flex: 1,
+              backgroundColor: constants.glassBg,
+              borderRadius: 16,
+              padding: 16,
+              alignItems: 'center',
+              borderWidth: 1,
+              borderColor: constants.glassBorder
+            }}>
+              <View style={{
+                backgroundColor: '#22c55e' + '20',
+                borderRadius: 10,
+                padding: 8,
+                marginBottom: 8,
+              }}>
+                <Feather name="archive" size={20} color="#22c55e" />
+              </View>
+              <Text style={{
+                fontFamily: 'Inter_700Bold',
+                fontSize: 18,
+                color: constants.primaryText,
+                marginBottom: 4
+              }}>
+                {compressedFilesCount}
+              </Text>
+              <Text style={{
+                fontFamily: 'Inter_400Regular',
+                fontSize: 12,
+                color: constants.secondaryText,
+                textAlign: 'center'
+              }}>
+                Compressed
+              </Text>
+            </View>
           </View>
-        </BlurView>
-      {/* Section Divider */}
-        <View style={{ height: 1, backgroundColor: GLASS_BORDER, marginHorizontal: 24, marginBottom: 18, opacity: 0.18, borderRadius: 1 }} />
-      {/* Compressed Files Section */}
-        <BlurView intensity={90} tint="dark" style={{ backgroundColor: GLASS_BG_DEEP, borderRadius: 28, borderWidth: 1.5, borderColor: GLASS_BORDER, paddingVertical: 24, paddingHorizontal: 0, width: '100%', marginHorizontal: 0, marginBottom: 18, shadowColor: '#000', shadowOpacity: 0.18, shadowRadius: 24, shadowOffset: { width: 0, height: 12 }, elevation: 12, overflow: 'hidden' }}> 
-          <Text style={{ fontFamily: 'Inter_700Bold', fontSize: 18, color: WHITE, marginBottom: 10, textAlign: 'left', marginLeft: 18 }}>Compressed Files</Text>
-        {compressedFiles.length === 0 ? (
-          <View style={styles.emptyState}>
-            <Feather name="archive" size={48} color={theme.textSecondary} />
-            <Text style={{ fontFamily: 'Inter_400Regular', fontSize: 16, color: theme.textSecondary, textAlign: 'left', marginLeft: 18 }}>No compressed files available</Text>
+
+          <View style={{ flexDirection: 'row', gap: 12 }}>
+            <View style={{
+              flex: 1,
+              backgroundColor: constants.glassBg,
+              borderRadius: 16,
+              padding: 16,
+              alignItems: 'center',
+              borderWidth: 1,
+              borderColor: constants.glassBorder
+            }}>
+              <View style={{
+                backgroundColor: '#a21caf' + '20',
+                borderRadius: 10,
+                padding: 8,
+                marginBottom: 8,
+              }}>
+                <Feather name="database" size={20} color="#a21caf" />
+              </View>
+              <Text style={{
+                fontFamily: 'Inter_700Bold',
+                fontSize: 18,
+                color: constants.primaryText,
+                marginBottom: 4
+              }}>
+                {formatBytes(totalSize)}
+              </Text>
+              <Text style={{
+                fontFamily: 'Inter_400Regular',
+                fontSize: 12,
+                color: constants.secondaryText,
+                textAlign: 'center'
+              }}>
+                Total Storage
+              </Text>
+            </View>
+
+            <View style={{
+              flex: 1,
+              backgroundColor: constants.glassBg,
+              borderRadius: 16,
+              padding: 16,
+              alignItems: 'center',
+              borderWidth: 1,
+              borderColor: constants.glassBorder
+            }}>
+              <View style={{
+                backgroundColor: '#f59e42' + '20',
+                borderRadius: 10,
+                padding: 8,
+                marginBottom: 8,
+              }}>
+                <Feather name="trending-down" size={20} color="#f59e42" />
+              </View>
+              <Text style={{
+                fontFamily: 'Inter_700Bold',
+                fontSize: 18,
+                color: constants.primaryText,
+                marginBottom: 4
+              }}>
+                {formatBytes(spaceSaved)}
+              </Text>
+              <Text style={{
+                fontFamily: 'Inter_400Regular',
+                fontSize: 12,
+                color: constants.secondaryText,
+                textAlign: 'center'
+              }}>
+                Space Saved
+              </Text>
+            </View>
           </View>
-        ) : (
-          compressedFiles.map((file, index) => (
-            <View key={file.id || index} style={{ marginBottom: 8 }}>
+        </View>
+        {/* Files List with Section Headers */}
+        <View style={{ marginBottom: 20 }}>
+          {/* Compressed Files Section Header */}
+          {compressedFiles.length > 0 && (
+            <View style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              paddingHorizontal: 16,
+              paddingVertical: 12,
+              marginBottom: 8
+            }}>
+              <View style={{
+                backgroundColor: '#22c55e' + '20',
+                borderRadius: 8,
+                padding: 6,
+                marginRight: 10,
+              }}>
+                <Feather name="archive" size={16} color="#22c55e" />
+              </View>
+              <Text style={{
+                fontFamily: 'Inter_700Bold',
+                fontSize: 16,
+                color: constants.primaryText,
+                letterSpacing: -0.2
+              }}>
+                Compressed Files ({compressedFiles.length})
+              </Text>
+            </View>
+          )}
+
+          {/* Compressed Files List */}
+          {compressedFiles.map((file, index) => (
+            <View key={`compressed-${file.id || index}`} style={{ marginBottom: 6 }}>
               <FileItem
                 item={file}
                 onPress={() => {}}
-                onMenuPress={() => handleMenuPress(file)}
-                onStarPress={() => handleStarPress(file)}
+                hideActions={true}
+                showCompressedBadge={true}
               />
             </View>
-          ))
-        )}
-        </BlurView>
-      {/* All Files Section (non-compressed) */}
-        <BlurView intensity={90} tint="dark" style={{ backgroundColor: GLASS_BG_DEEP, borderRadius: 28, borderWidth: 1.5, borderColor: GLASS_BORDER, paddingVertical: 24, paddingHorizontal: 0, width: '100%', marginHorizontal: 0, marginBottom: 18, shadowColor: '#000', shadowOpacity: 0.18, shadowRadius: 24, shadowOffset: { width: 0, height: 12 }, elevation: 12, overflow: 'hidden' }}> 
-          <Text style={{ fontFamily: 'Inter_700Bold', fontSize: 18, color: WHITE, marginBottom: 10, textAlign: 'left', marginLeft: 18 }}>All Files</Text>
-        {nonCompressedFiles.length === 0 ? (
-          <View style={styles.emptyState}>
-            <Feather name="file" size={48} color={theme.textSecondary} />
-            <Text style={{ fontFamily: 'Inter_400Regular', fontSize: 16, color: theme.textSecondary, textAlign: 'left', marginLeft: 18 }}>No files available for compression</Text>
-          </View>
-        ) : (
-          nonCompressedFiles.map((file, index) => (
+          ))}
+
+          {/* Section Divider */}
+          {compressedFiles.length > 0 && nonCompressedFiles.length > 0 && (
+            <View style={{
+              height: 1,
+              backgroundColor: constants.glassBorder,
+              marginHorizontal: 16,
+              marginVertical: 16,
+              opacity: 0.5
+            }} />
+          )}
+
+          {/* All Files Section Header */}
+          {nonCompressedFiles.length > 0 && (
+            <View style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              paddingHorizontal: 16,
+              paddingVertical: 12,
+              marginBottom: 8
+            }}>
+              <View style={{
+                backgroundColor: constants.accent + '20',
+                borderRadius: 8,
+                padding: 6,
+                marginRight: 10,
+              }}>
+                <Feather name="file" size={16} color={constants.accent} />
+              </View>
+              <Text style={{
+                fontFamily: 'Inter_700Bold',
+                fontSize: 16,
+                color: constants.primaryText,
+                letterSpacing: -0.2
+              }}>
+                All Files ({nonCompressedFiles.length})
+              </Text>
+            </View>
+          )}
+
+          {/* All Files List */}
+          {nonCompressedFiles.map((file, index) => (
             <TouchableOpacity
-              key={file.id || index}
-              style={styles.fileItem}
+              key={`uncompressed-${file.id || index}`}
+              style={{ marginBottom: 6 }}
               onPress={() => toggleFileSelection(file.id)}
               onLongPress={() => { setShowOptionsModal(true); }}
+              activeOpacity={0.8}
             >
-              <View style={styles.fileItemContent}>
+              <View style={{ position: 'relative' }}>
                 <FileItem
                   item={file}
                   onPress={() => toggleFileSelection(file.id)}
-                  onMenuPress={() => handleMenuPress(file)}
-                  onStarPress={() => handleStarPress(file)}
+                  hideActions={true}
                 />
+                {/* Selection Indicator */}
                 {selectedFiles.includes(file.id) && (
-                    <View style={[styles.selectionIndicator, { backgroundColor: GLASS_BG_DEEP }]}> 
-                    <Feather name="check-circle" size={20} color={theme.primary} />
+                  <View style={{
+                    position: 'absolute',
+                    top: 8,
+                    right: 20,
+                    backgroundColor: constants.accent,
+                    borderRadius: 10,
+                    padding: 5,
+                  }}>
+                    <Feather name="check" size={14} color={constants.primaryText} />
                   </View>
                 )}
               </View>
             </TouchableOpacity>
-          ))
-        )}
-          {/* Refined Compress Button */}
-          <TouchableOpacity
-            style={{ backgroundColor: BLUE_ACCENT, borderRadius: 14, paddingVertical: 10, alignItems: 'center', justifyContent: 'center', width: '90%', alignSelf: 'center', marginTop: 18, shadowOpacity: 0.10, shadowRadius: 8, shadowOffset: { width: 0, height: 2 }, elevation: 2 }}
-            onPress={() => setShowOptionsModal(true)}
-            disabled={compressing}
-            activeOpacity={0.85}
-          >
-            <Feather name="archive" size={18} color={WHITE} />
-            <Text style={{ color: WHITE, fontFamily: 'Inter_700Bold', fontSize: 15, textAlign: 'center', marginTop: 2 }}>Compress Selected</Text>
-          </TouchableOpacity>
-        </BlurView>
+          ))}
+
+          {/* Empty State */}
+          {compressedFiles.length === 0 && nonCompressedFiles.length === 0 && (
+            <View style={{ alignItems: 'center', paddingVertical: 60 }}>
+              <View style={{
+                backgroundColor: constants.glassBg,
+                borderRadius: 20,
+                padding: 20,
+                marginBottom: 16,
+                borderWidth: 1,
+                borderColor: constants.glassBorder,
+              }}>
+                <Feather name="file" size={48} color={constants.secondaryText} />
+              </View>
+              <Text style={{
+                fontFamily: 'Inter_400Regular',
+                fontSize: 16,
+                color: constants.secondaryText,
+                textAlign: 'center'
+              }}>
+                No files available
+              </Text>
+            </View>
+          )}
+
+          {/* Compress Button */}
+          {nonCompressedFiles.length > 0 && (
+            <View style={{ paddingHorizontal: 16, marginTop: 20 }}>
+              <TouchableOpacity
+                style={{
+                  backgroundColor: constants.accent,
+                  borderRadius: 16,
+                  paddingVertical: 16,
+                  paddingHorizontal: 20,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  shadowColor: '#000',
+                  shadowOpacity: 0.15,
+                  shadowRadius: 8,
+                  shadowOffset: { width: 0, height: 4 },
+                  elevation: 6,
+                  opacity: selectedFiles.length === 0 ? 0.5 : 1,
+                }}
+                onPress={() => setShowOptionsModal(true)}
+                disabled={compressing || selectedFiles.length === 0}
+                activeOpacity={0.8}
+              >
+                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                  <Feather name="archive" size={20} color={constants.primaryText} style={{ marginRight: 10 }} />
+                  <Text style={{
+                    color: constants.primaryText,
+                    fontFamily: 'Inter_700Bold',
+                    fontSize: 16,
+                    letterSpacing: -0.2
+                  }}>
+                    {selectedFiles.length === 0
+                      ? 'Select Files to Compress'
+                      : `Compress ${selectedFiles.length} File${selectedFiles.length !== 1 ? 's' : ''}`
+                    }
+                  </Text>
+                </View>
+              </TouchableOpacity>
+            </View>
+          )}
+        </View>
       </ScrollView>
       {/* Modals and overlays remain outside the ScrollView */}
       <Modal
@@ -497,19 +750,16 @@ export default function CompressionScreen() {
         animationType="fade"
         onRequestClose={() => { setShowSuccessModal(false); setShowErrorModal(false); }}
       >
-        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-          <BlurView intensity={120} tint="dark" style={{ ...StyleSheet.absoluteFillObject, zIndex: 1 }}>
-            <View style={{ flex: 1, backgroundColor: 'rgba(10,10,20,0.55)' }} />
-          </BlurView>
-          <BlurView intensity={90} tint="dark" style={{ backgroundColor: GLASS_BG_DEEP, borderRadius: 24, padding: 32, alignItems: 'center', width: 320, borderWidth: 1.5, borderColor: GLASS_BORDER, zIndex: 2, shadowColor: '#000', shadowOpacity: 0.22, shadowRadius: 24, shadowOffset: { width: 0, height: 12 }, elevation: 16 }}>
-            <Feather name={showSuccessModal ? 'check-circle' : 'alert-circle'} size={48} color={showSuccessModal ? BLUE_ACCENT : 'crimson'} style={{ marginBottom: 18 }} />
-            <Text style={{ fontSize: 18, color: WHITE, marginBottom: 18, textAlign: 'center' }}>{showSuccessModal ? successMessage : errorMessage}</Text>
-            <TouchableOpacity style={{ backgroundColor: BLUE_ACCENT, borderRadius: 18, paddingVertical: 14, paddingHorizontal: 38, alignItems: 'center', marginTop: 4, width: '100%' }} onPress={() => { setShowSuccessModal(false); setShowErrorModal(false); }} activeOpacity={0.85}>
-              <Text style={{ color: WHITE, fontSize: 16, textAlign: 'center' }}>OK</Text>
-              </TouchableOpacity>
-          </BlurView>
+        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(0,0,0,0.8)' }}>
+          <View style={{ backgroundColor: '#000000', borderRadius: 16, padding: 24, alignItems: 'center', width: 320, borderWidth: 1, borderColor: '#333333', shadowColor: '#000', shadowOpacity: 0.5, shadowRadius: 20, shadowOffset: { width: 0, height: 10 }, elevation: 20 }}>
+            <Feather name={showSuccessModal ? 'check-circle' : 'alert-circle'} size={48} color={showSuccessModal ? '#1D9BF0' : '#F4212E'} style={{ marginBottom: 18 }} />
+            <Text style={{ fontSize: 18, fontFamily: 'Inter_700Bold', color: '#FFFFFF', marginBottom: 16, textAlign: 'center' }}>{showSuccessModal ? successMessage : errorMessage}</Text>
+            <TouchableOpacity style={{ backgroundColor: '#1D9BF0', borderRadius: 20, paddingVertical: 12, paddingHorizontal: 24, alignItems: 'center', width: '100%' }} onPress={() => { setShowSuccessModal(false); setShowErrorModal(false); }} activeOpacity={0.8}>
+              <Text style={{ color: '#FFFFFF', fontFamily: 'Inter_700Bold', fontSize: 15 }}>OK</Text>
+            </TouchableOpacity>
           </View>
-        </Modal>
+        </View>
+      </Modal>
       {/* Compression Options Modal */}
       {showOptionsModal && (
         <Modal
@@ -518,45 +768,57 @@ export default function CompressionScreen() {
           animationType="fade"
           onRequestClose={() => setShowOptionsModal(false)}
         >
-          <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-            {/* Full-screen glassy blur overlay */}
-            <BlurView intensity={120} tint="dark" style={{ ...StyleSheet.absoluteFillObject, zIndex: 1 }} />
-            {/* Glassy modal card */}
-            <BlurView intensity={90} tint="dark" style={{ backgroundColor: 'rgba(20,40,80,0.38)', borderRadius: 32, borderWidth: 2, borderColor: 'rgba(255,255,255,0.22)', padding: 32, alignItems: 'center', width: '92%', maxWidth: 420, zIndex: 2, shadowColor: '#2979FF', shadowOpacity: 0.18, shadowRadius: 32, shadowOffset: { width: 0, height: 16 }, elevation: 18 }}>
+          <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(0,0,0,0.8)' }}>
+            {/* Twitter X Style Modal Card */}
+            <View style={{
+              backgroundColor: '#000000',
+              borderRadius: 16,
+              padding: 24,
+              alignItems: 'center',
+              width: '90%',
+              maxWidth: 400,
+              borderWidth: 1,
+              borderColor: '#333333',
+              shadowColor: '#000',
+              shadowOpacity: 0.5,
+              shadowRadius: 20,
+              shadowOffset: { width: 0, height: 10 },
+              elevation: 20
+            }}>
               <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 16 }}>
-                <Feather name="settings" size={24} color={BLUE_ACCENT} />
-                <Text style={{ fontFamily: 'Inter_700Bold', fontSize: 22, color: WHITE, marginLeft: 12 }}>Compression Options</Text>
+                <Feather name="settings" size={24} color="#1D9BF0" />
+                <Text style={{ fontFamily: 'Inter_700Bold', fontSize: 20, color: '#FFFFFF', marginLeft: 12 }}>Compression Options</Text>
               </View>
-              <Text style={{ fontFamily: 'Inter_400Regular', fontSize: 16, color: WHITE, marginBottom: 20, lineHeight: 22, textAlign: 'center', opacity: 0.85 }}>Choose compression settings for selected file(s).</Text>
+              <Text style={{ fontFamily: 'Inter_400Regular', fontSize: 14, color: '#8B98A5', marginBottom: 24, lineHeight: 20, textAlign: 'center' }}>Choose compression settings for selected file(s).</Text>
               {/* Refined options UI */}
               <View style={{ width: '100%', marginBottom: 18 }}>{renderCompressionOptions()}</View>
-              <View style={{ flexDirection: 'row', gap: 14, width: '100%', marginTop: 8 }}>
+              <View style={{ flexDirection: 'row', justifyContent: 'center', width: '100%', gap: 12 }}>
                 <TouchableOpacity
-                  style={{ flex: 1, borderRadius: 18, paddingVertical: 16, alignItems: 'center', backgroundColor: 'rgba(255,255,255,0.10)', borderWidth: 1, borderColor: 'rgba(255,255,255,0.18)' }}
+                  style={{ backgroundColor: 'transparent', borderRadius: 20, paddingVertical: 12, paddingHorizontal: 24, flex: 1, alignItems: 'center', borderWidth: 1, borderColor: '#333333' }}
                   onPress={() => setShowOptionsModal(false)}
                   disabled={compressing}
-                  activeOpacity={0.85}
+                  activeOpacity={0.8}
                 >
-                  <Text style={{ color: WHITE, fontFamily: 'Inter_700Bold', fontSize: 16, textAlign: 'center' }}>Cancel</Text>
+                  <Text style={{ color: '#FFFFFF', fontFamily: 'Inter_700Bold', fontSize: 15 }}>Cancel</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
-                  style={{ flex: 1, borderRadius: 18, paddingVertical: 16, alignItems: 'center', backgroundColor: BLUE_ACCENT, borderWidth: 1, borderColor: '#fff', shadowColor: '#2979FF', shadowOpacity: 0.18, shadowRadius: 8, shadowOffset: { width: 0, height: 2 }, elevation: 2 }}
+                  style={{ backgroundColor: '#1D9BF0', borderRadius: 20, paddingVertical: 12, paddingHorizontal: 24, flex: 1, alignItems: 'center' }}
                   onPress={handleCompress}
                   disabled={compressing}
-                  activeOpacity={0.85}
+                  activeOpacity={0.8}
                 >
                   {compressing ? (
-                    <ActivityIndicator color={WHITE} />
+                    <ActivityIndicator color="#FFFFFF" />
                   ) : (
-                    <Text style={{ color: WHITE, fontFamily: 'Inter_700Bold', fontSize: 16, textAlign: 'center' }}>Compress</Text>
+                    <Text style={{ color: '#FFFFFF', fontFamily: 'Inter_700Bold', fontSize: 15 }}>Compress</Text>
                   )}
                 </TouchableOpacity>
               </View>
-            </BlurView>
+            </View>
           </View>
         </Modal>
       )}
-    </LinearGradient>
+    </View>
   );
 }
 

@@ -55,12 +55,8 @@ const plans = [
 
 const { width } = Dimensions.get('window');
 
-const DEEP_BLUE_GRADIENT = ['#0a0f1c', '#12203a', '#1a2a4f'];
-const GLASS_BG_DEEP = 'rgba(20,40,80,0.32)';
-const GLASS_BORDER = 'rgba(255,255,255,0.10)';
-
 export default function ManagePlanScreen({ navigation, route }) {
-  const { theme } = useTheme();
+  const { theme, constants } = useTheme();
   const [selectedTab, setSelectedTab] = useState(0);
   const flatListRef = useRef();
   const { isPremium, premiumPlan, upgradeToPremium } = usePremium();
@@ -118,9 +114,9 @@ export default function ManagePlanScreen({ navigation, route }) {
   if (!fontsLoaded) return null;
 
   return (
-    <LinearGradient colors={DEEP_BLUE_GRADIENT} style={{ flex: 1 }}>
+    <View style={{ flex: 1, backgroundColor: theme.background }}>
       <SafeAreaView style={{ flex: 1 }}>
-        <Text style={{ fontFamily: 'Inter_700Bold', fontSize: 24, color: theme.primary, textAlign: 'center', marginBottom: 10, marginTop: 32, letterSpacing: 0.2 }}>Choose Your CloudStore Plan</Text>
+        <Text style={{ fontFamily: 'Inter_700Bold', fontSize: 24, color: constants.primaryText, textAlign: 'center', marginBottom: 10, marginTop: 32, letterSpacing: 0.2 }}>Choose Your CloudStore Plan</Text>
         <BlurView intensity={70} tint="dark" style={{ borderRadius: 18, marginHorizontal: 18, marginBottom: 12, marginTop: 8, overflow: 'hidden' }}>
           <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
             {plans.map((plan, idx) => (
@@ -147,7 +143,7 @@ export default function ManagePlanScreen({ navigation, route }) {
           snapToInterval={width * 0.85 + 20}
           decelerationRate="fast"
           renderItem={({ item }) => (
-            <BlurView intensity={90} tint="dark" style={{ backgroundColor: GLASS_BG_DEEP, borderRadius: 28, borderWidth: 1.5, borderColor: theme.primary, marginHorizontal: 10, padding: 28, shadowColor: theme.shadow, shadowOpacity: 0.12, shadowRadius: 16, shadowOffset: { width: 0, height: 8 }, elevation: 8, alignItems: 'center', justifyContent: 'center', marginBottom: 10, width: width * 0.85, overflow: 'hidden' }}>
+            <BlurView intensity={90} tint="dark" style={{ backgroundColor: constants.glassBg, borderRadius: 28, borderWidth: 1.5, borderColor: constants.accent, marginHorizontal: 10, padding: 28, shadowColor: theme.shadow, shadowOpacity: 0.12, shadowRadius: 16, shadowOffset: { width: 0, height: 8 }, elevation: 8, alignItems: 'center', justifyContent: 'center', marginBottom: 10, width: width * 0.85, overflow: 'hidden' }}>
               <Text style={{ fontFamily: 'Inter_700Bold', fontSize: 22, color: theme.text, marginBottom: 4 }}>{item.name}</Text>
               <Text style={{ fontFamily: 'Inter_400Regular', fontSize: 16, color: theme.text, marginBottom: 14 }}>{item.storage} {item.price}</Text>
               <View style={{ marginBottom: 14, width: '100%' }}>
@@ -195,11 +191,11 @@ export default function ManagePlanScreen({ navigation, route }) {
         </Modal>
         <BlurView intensity={60} tint="dark" style={{ borderRadius: 14, marginHorizontal: 32, marginTop: 10, marginBottom: 18, overflow: 'hidden' }}>
           <TouchableOpacity style={{ paddingVertical: 14, alignItems: 'center', width: '100%' }} onPress={() => navigation.goBack()}>
-            <Text style={{ fontFamily: 'Inter_700Bold', color: theme.primary, fontSize: 16 }}>Continue with Free Plan</Text>
+            <Text style={{ fontFamily: 'Inter_700Bold', color: constants.accent, fontSize: 16 }}>Continue with Free Plan</Text>
           </TouchableOpacity>
         </BlurView>
       </SafeAreaView>
-    </LinearGradient>
+    </View>
   );
 }
 

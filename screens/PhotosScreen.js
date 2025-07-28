@@ -21,15 +21,10 @@ const photos = [
   { id: '9', uri: 'https://images.unsplash.com/photo-1515378791036-0648a3ef77b2' }, // polaroid collage
 ];
 
-const DEEP_BLUE_GRADIENT = ['#0a0f1c', '#12203a', '#1a2a4f'];
-const GLASS_BG_DEEP = 'rgba(20,40,80,0.32)';
-const GLASS_BORDER = 'rgba(255,255,255,0.10)';
-const WHITE = '#fff';
-const LIGHT_TEXT = '#e0e6f0';
-const BLUE_ACCENT = '#2979FF';
+// Constants moved to theme system
 
 export default function PhotosScreen() {
-  const { theme } = useTheme();
+  const { theme, constants } = useTheme();
   const navigation = useNavigation();
   // let [fontsLoaded] = useFonts({ Inter_400Regular, Inter_700Bold });
   // if (!fontsLoaded) return null;
@@ -60,11 +55,11 @@ export default function PhotosScreen() {
   };
 
   return (
-    <LinearGradient colors={DEEP_BLUE_GRADIENT} style={{ flex: 1 }}>
+    <View style={{ flex: 1, backgroundColor: theme.background }}>
       <ScrollView contentContainerStyle={{ paddingBottom: 48 }} showsVerticalScrollIndicator={false}>
-        <BlurView intensity={80} tint="dark" style={{ backgroundColor: GLASS_BG_DEEP, borderRadius: 22, borderWidth: 1, borderColor: GLASS_BORDER, marginTop: 18, marginBottom: 18, marginHorizontal: 12, alignItems: 'center', shadowColor: '#000', shadowOpacity: 0.10, shadowRadius: 8, shadowOffset: { width: 0, height: 4 }, elevation: 4, paddingTop: 16, paddingBottom: 12 }}>
-          <Text style={{ fontFamily: 'Inter_700Bold', fontSize: 24, color: WHITE, alignSelf: 'flex-start', marginLeft: 16, marginBottom: 2 }}>Photos</Text>
-          <Text style={{ fontFamily: 'Inter_400Regular', fontSize: 16, color: LIGHT_TEXT, alignSelf: 'flex-start', marginLeft: 16, marginBottom: 6 }}>Today</Text>
+        <BlurView intensity={80} tint="dark" style={{ backgroundColor: constants.glassBg, borderRadius: 22, borderWidth: 1, borderColor: constants.glassBorder, marginTop: 18, marginBottom: 18, marginHorizontal: 12, alignItems: 'center', shadowColor: '#000', shadowOpacity: 0.10, shadowRadius: 8, shadowOffset: { width: 0, height: 4 }, elevation: 4, paddingTop: 16, paddingBottom: 12 }}>
+          <Text style={{ fontFamily: 'Inter_700Bold', fontSize: 24, color: constants.primaryText, alignSelf: 'flex-start', marginLeft: 16, marginBottom: 2 }}>Photos</Text>
+          <Text style={{ fontFamily: 'Inter_400Regular', fontSize: 16, color: constants.secondaryText, alignSelf: 'flex-start', marginLeft: 16, marginBottom: 6 }}>Today</Text>
           <FlatList
             data={photos}
             keyExtractor={item => item.id}
@@ -76,20 +71,20 @@ export default function PhotosScreen() {
             contentContainerStyle={styles.grid}
           />
         </BlurView>
-        <Text style={{ fontFamily: 'Inter_700Bold', fontSize: 28, color: WHITE, marginBottom: 4, alignSelf: 'flex-start', marginLeft: 16 }}>Photos</Text>
-        <Text style={{ fontFamily: 'Inter_400Regular', fontSize: 16, color: LIGHT_TEXT, marginBottom: 10, alignSelf: 'flex-start', marginLeft: 16, marginRight: 16 }}>
+        <Text style={{ fontFamily: 'Inter_700Bold', fontSize: 28, color: constants.primaryText, marginBottom: 4, alignSelf: 'flex-start', marginLeft: 16 }}>Photos</Text>
+        <Text style={{ fontFamily: 'Inter_400Regular', fontSize: 16, color: constants.secondaryText, marginBottom: 10, alignSelf: 'flex-start', marginLeft: 16, marginRight: 16 }}>
           Come here to view and edit photos and videos, and manage camera uploads.
         </Text>
-        <TouchableOpacity style={{ borderRadius: 24, paddingVertical: 18, paddingHorizontal: 24, alignItems: 'center', width: '80%', marginBottom: 16, alignSelf: 'center', backgroundColor: BLUE_ACCENT, shadowOpacity: 0.10, shadowRadius: 8, shadowOffset: { width: 0, height: 2 }, elevation: 2 }} activeOpacity={0.85} onPress={() => navigation.navigate('BackupLoading')}>
-          <Text style={{ color: WHITE, fontFamily: 'Inter_700Bold', fontSize: 18 }}>Back up photos</Text>
+        <TouchableOpacity style={{ borderRadius: 24, paddingVertical: 18, paddingHorizontal: 24, alignItems: 'center', width: '80%', marginBottom: 16, alignSelf: 'center', backgroundColor: constants.accent, shadowOpacity: 0.10, shadowRadius: 8, shadowOffset: { width: 0, height: 2 }, elevation: 2 }} activeOpacity={0.85} onPress={() => navigation.navigate('BackupLoading')}>
+          <Text style={{ color: constants.primaryText, fontFamily: 'Inter_700Bold', fontSize: 18 }}>Back up photos</Text>
         </TouchableOpacity>
-        <BlurView intensity={60} tint="dark" style={{ borderRadius: 24, overflow: 'hidden', width: '80%', alignSelf: 'center', marginBottom: 8, borderWidth: 1.5, borderColor: BLUE_ACCENT }}>
+        <BlurView intensity={60} tint="dark" style={{ borderRadius: 24, overflow: 'hidden', width: '80%', alignSelf: 'center', marginBottom: 8, borderWidth: 1.5, borderColor: constants.accent }}>
           <TouchableOpacity style={{ borderRadius: 24, paddingVertical: 18, paddingHorizontal: 24, alignItems: 'center', width: '100%' }} activeOpacity={0.85} onPress={pickAndUploadFile} disabled={isPickingDocument}>
-            <Text style={{ color: BLUE_ACCENT, fontFamily: 'Inter_700Bold', fontSize: 18 }}>Upload photos</Text>
+            <Text style={{ color: constants.accent, fontFamily: 'Inter_700Bold', fontSize: 18 }}>Upload photos</Text>
           </TouchableOpacity>
         </BlurView>
       </ScrollView>
-    </LinearGradient>
+    </View>
   );
 }
 

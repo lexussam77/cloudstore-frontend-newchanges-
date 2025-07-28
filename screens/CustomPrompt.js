@@ -28,26 +28,27 @@ export default function CustomPrompt({ visible, message, onClose, success = true
 
   if (!visible || !fontsLoaded) return null;
 
-  const GLASS_BG_DEEP = 'rgba(20,40,80,0.32)';
-  const GLASS_BORDER = 'rgba(255,255,255,0.10)';
-  const WHITE = '#fff';
-  const BLUE_ACCENT = '#2979FF';
   return (
-    <View style={[styles.overlay, { backgroundColor: 'rgba(10,20,40,0.55)' }]}> 
-      <BlurView intensity={120} tint="dark" style={{ ...StyleSheet.absoluteFillObject, zIndex: 1 }} />
-      <Animated.View style={{ alignItems: 'center', justifyContent: 'center', marginBottom: 18, transform: [{ scale: scaleAnim }], zIndex: 2 }}>
-        <BlurView intensity={90} tint="dark" style={{ backgroundColor: GLASS_BG_DEEP, borderRadius: 48, padding: 18, borderWidth: 1.5, borderColor: GLASS_BORDER, shadowColor: '#000', shadowOpacity: 0.18, shadowRadius: 18, shadowOffset: { width: 0, height: 8 }, elevation: 8 }}>
-          <AntDesign
-            name={success ? 'checkcircle' : 'closecircle'}
-            size={84}
-            color={success ? BLUE_ACCENT : 'crimson'}
-          />
-        </BlurView>
+    <View style={[styles.overlay, { backgroundColor: 'rgba(0,0,0,0.8)' }]}>
+      <Animated.View style={{ alignItems: 'center', justifyContent: 'center', marginBottom: 20, transform: [{ scale: scaleAnim }], zIndex: 2 }}>
+        <View style={{ backgroundColor: '#000000', borderRadius: 24, padding: 32, borderWidth: 1, borderColor: '#333333', shadowColor: '#000', shadowOpacity: 0.5, shadowRadius: 20, shadowOffset: { width: 0, height: 10 }, elevation: 20, alignItems: 'center', minWidth: 280 }}>
+          <View style={{ backgroundColor: success ? '#1D9BF0' : '#F91880', borderRadius: 50, padding: 16, marginBottom: 16 }}>
+            <AntDesign
+              name={success ? 'checkcircle' : 'closecircle'}
+              size={48}
+              color="#FFFFFF"
+            />
+          </View>
+          <Text style={{ fontFamily: 'Inter_700Bold', fontSize: 18, color: '#FFFFFF', textAlign: 'center', marginBottom: 20, lineHeight: 24 }}>{message}</Text>
+          <TouchableOpacity
+            onPress={onClose}
+            activeOpacity={0.8}
+            style={{ backgroundColor: '#1D9BF0', borderRadius: 20, paddingVertical: 12, paddingHorizontal: 32, alignItems: 'center', minWidth: 120 }}
+          >
+            <Text style={{ color: '#FFFFFF', fontFamily: 'Inter_700Bold', fontSize: 16 }}>OK</Text>
+          </TouchableOpacity>
+        </View>
       </Animated.View>
-      <Text style={{ fontFamily: 'Inter_700Bold', fontSize: 18, color: WHITE, textAlign: 'center', marginBottom: 14, marginHorizontal: 24, zIndex: 2 }}>{message}</Text>
-      <TouchableOpacity onPress={onClose} activeOpacity={0.85} style={{ backgroundColor: BLUE_ACCENT, borderRadius: 18, paddingVertical: 14, paddingHorizontal: 38, alignItems: 'center', marginTop: 4, shadowOpacity: 0.10, shadowRadius: 8, shadowOffset: { width: 0, height: 2 }, elevation: 2, zIndex: 2 }}>
-        <Text style={{ color: WHITE, fontFamily: 'Inter_700Bold', fontSize: 16 }}>OK</Text>
-      </TouchableOpacity>
     </View>
   );
 }

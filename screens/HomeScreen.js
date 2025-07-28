@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { View, Text, StyleSheet, TextInput, TouchableOpacity, Alert, SafeAreaView, ScrollView, Image, Animated, FlatList, RefreshControl, Dimensions, Modal, TouchableWithoutFeedback } from 'react-native';
+import { View, Text, StyleSheet, TextInput, TouchableOpacity, Alert, ScrollView, Image, Animated, FlatList, RefreshControl, Dimensions, Modal, TouchableWithoutFeedback } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { searchFiles, listFiles } from './api';
 import Feather from 'react-native-vector-icons/Feather';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -15,10 +16,10 @@ const { width: screenWidth, height: screenHeight } = Dimensions.get('window');
 
 const user = { name: 'Lazarus', avatar: 'https://img.icons8.com/color/96/user-male-circle--v2.png' };
 
-const DEEP_BLUE_GRADIENT = ['#0a0f1c', '#12203a', '#1a2a4f'];
+// DEEP_BLUE_GRADIENT moved to theme constants
 
 export default function HomeScreen() {
-  const { theme } = useTheme();
+  const { theme, constants } = useTheme();
   const [folders, setFolders] = useState([]);
   const [allFiles, setAllFiles] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
@@ -218,7 +219,7 @@ export default function HomeScreen() {
     <View style={{ flex: 1 }}>
       {/* Split Gradient Background */}
       <LinearGradient
-        colors={DEEP_BLUE_GRADIENT}
+        colors={constants.gradient}
         start={{ x: 0, y: 0 }}
         end={{ x: 0, y: 0.5 }}
         style={StyleSheet.absoluteFill}

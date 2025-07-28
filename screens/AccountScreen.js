@@ -1,19 +1,14 @@
 import React, { useContext, useState, useRef, useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, SectionList, Alert, SafeAreaView, ScrollView, Image, Animated, Modal, ActivityIndicator } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, SafeAreaView, ScrollView, Image, Modal, ActivityIndicator, Animated } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import Feather from 'react-native-vector-icons/Feather';
 import { AuthContext } from './AuthContext';
-import LogoutSVG from '../assets/images/undraw_log-out_2vod.svg';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useIsFocused } from '@react-navigation/native';
 import { useTheme } from '../theme/ThemeContext';
 import { getCurrentUser, listFiles } from './api';
-import { LinearGradient } from 'expo-linear-gradient';
 import { useFonts, Inter_400Regular, Inter_700Bold } from '@expo-google-fonts/inter';
-import { BlurView } from 'expo-blur';
-import EyesBro from '../assets/images/pngs/Eyes-bro.png';
-import ExpertsBro from '../assets/images/pngs/Experts-bro.png';
-import NerdBro from '../assets/images/pngs/Nerd-bro.png';
+
 
 const user = {
   name: 'lazarus sam',
@@ -41,16 +36,11 @@ const sections = [
   { title: 'Keep work moving', data: [{}], key: 'keepwork' },
 ];
 
-const DEEP_BLUE_GRADIENT = ['#0a0f1c', '#12203a', '#1a2a4f'];
-const GLASS_BG_DEEP = 'rgba(20,40,80,0.32)';
-const GLASS_BORDER = 'rgba(255,255,255,0.10)';
-const WHITE = '#fff';
-const LIGHT_TEXT = '#e0e6f0';
-const BLUE_ACCENT = '#2979FF';
+// Constants moved to theme system
 
 export default function AccountScreen({ navigation }) {
   const { logout } = useContext(AuthContext);
-  const { theme } = useTheme();
+  const { theme, constants } = useTheme();
   const [avatarUri, setAvatarUri] = useState(null);
   const [storage, setStorage] = useState('4.0 MB / 2.0 GB');
   const [showLogoutModal, setShowLogoutModal] = useState(false);
@@ -164,178 +154,270 @@ export default function AccountScreen({ navigation }) {
   if (!fontsLoaded) return null;
 
   return (
-    <LinearGradient colors={DEEP_BLUE_GRADIENT} style={styles.gradientContainer}>
-      <SafeAreaView style={styles.container}>
-      {/* Top Bar */}
-        <View style={styles.topBar}>
-        <TouchableOpacity style={styles.settingsIconWrap} onPress={() => navigation.navigate('Settings')} activeOpacity={0.7}>
-            <Feather name="settings" size={26} color={WHITE} />
+    <View style={{ flex: 1, backgroundColor: '#000000' }}>
+      <SafeAreaView style={{ flex: 1 }}>
+      {/* Header */}
+      <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 16, paddingVertical: 16, marginBottom: 8 }}>
+        <Text style={{ fontFamily: 'Inter_700Bold', fontSize: 28, color: '#FFFFFF' }}>Account</Text>
+        <TouchableOpacity style={{ padding: 8, borderRadius: 20, backgroundColor: '#1D9BF0' }} onPress={() => navigation.navigate('Settings')} activeOpacity={0.8}>
+          <Feather name="settings" size={20} color="#FFFFFF" />
         </TouchableOpacity>
       </View>
-      <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
-        {/* Profile Card */}
-        <BlurView intensity={80} tint="dark" style={{ backgroundColor: GLASS_BG_DEEP, borderRadius: 28, borderWidth: 1, borderColor: GLASS_BORDER, marginHorizontal: 16, marginBottom: 16, padding: 0, shadowColor: '#000', shadowOpacity: 0.18, shadowRadius: 16, shadowOffset: { width: 0, height: 8 }, elevation: 8, overflow: 'hidden', minHeight: 100 }}>
-          <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 14, paddingHorizontal: 18 }}>
-            <TouchableOpacity onPress={pickImage} activeOpacity={0.8} style={[styles.avatarCircleImgWrap, { marginRight: 16 }] }>
+      <ScrollView contentContainerStyle={{ paddingBottom: 80, paddingTop: 8 }} showsVerticalScrollIndicator={false}>
+        {/* Profile Section */}
+        <View style={{ paddingHorizontal: 16, paddingVertical: 20, borderBottomWidth: 1, borderBottomColor: '#333333' }}>
+          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+            <TouchableOpacity onPress={pickImage} activeOpacity={0.8} style={{ marginRight: 16, position: 'relative' }}>
                 {avatarUri ? (
-                  <Image source={{ uri: avatarUri }} style={styles.avatarCircleImg} />
+                  <Image source={{ uri: avatarUri }} style={{ width: 64, height: 64, borderRadius: 32 }} />
                 ) : (
-                  <View style={[styles.avatarCircleImg, { backgroundColor: '#1a237e', alignItems: 'center', justifyContent: 'center' }]}> 
-                    <Feather name="user" size={40} color={BLUE_ACCENT} />
+                  <View style={{ width: 64, height: 64, borderRadius: 32, backgroundColor: '#1D9BF0', alignItems: 'center', justifyContent: 'center' }}>
+                    <Text style={{ fontSize: 24, fontWeight: 'bold', color: '#FFFFFF' }}>
+                      {userProfile.name ? userProfile.name.charAt(0).toUpperCase() : 'U'}
+                    </Text>
                   </View>
                 )}
-                <View style={styles.editAvatarOverlay}>
-                  <Feather name="edit-3" size={16} color={WHITE} />
+                <View style={{ position: 'absolute', bottom: 0, right: 0, backgroundColor: '#1D9BF0', borderRadius: 12, padding: 4, borderWidth: 2, borderColor: '#000000' }}>
+                  <Feather name="edit-3" size={12} color="#FFFFFF" />
                 </View>
                 </TouchableOpacity>
             <View style={{ flex: 1, justifyContent: 'center', minWidth: 0 }}>
                 {loading ? (
-                <ActivityIndicator size="small" color={BLUE_ACCENT} style={{ marginTop: 0 }} />
+                <ActivityIndicator size="small" color="#1D9BF0" style={{ marginTop: 0 }} />
                 ) : error ? (
-                <Text style={{ color: 'red', fontFamily: 'Inter_400Regular', marginTop: 0, fontSize: 14, textAlign: 'left' }} numberOfLines={1} adjustsFontSizeToFit>{error}</Text>
+                <Text style={{ color: '#F91880', fontFamily: 'Inter_400Regular', marginTop: 0, fontSize: 14, textAlign: 'left' }} numberOfLines={1} adjustsFontSizeToFit>{error}</Text>
                 ) : (
                   <>
-                  <Text style={{ fontFamily: 'Inter_700Bold', fontSize: 17, color: WHITE, marginBottom: 2, textAlign: 'left' }} numberOfLines={1} adjustsFontSizeToFit>{userProfile.name}</Text>
-                  <Text style={{ fontFamily: 'Inter_400Regular', fontSize: 13, color: LIGHT_TEXT, textAlign: 'left' }} numberOfLines={1} adjustsFontSizeToFit>{userProfile.email}</Text>
+                  <Text style={{ fontFamily: 'Inter_700Bold', fontSize: 18, color: '#FFFFFF', marginBottom: 4, textAlign: 'left' }} numberOfLines={1} adjustsFontSizeToFit>{userProfile.name}</Text>
+                  <Text style={{ fontFamily: 'Inter_400Regular', fontSize: 14, color: '#8B98A5', textAlign: 'left' }} numberOfLines={1} adjustsFontSizeToFit>{userProfile.email}</Text>
                   </>
                 )}
             </View>
           </View>
-        </BlurView>
-        
-        {/* Plan and Storage Card */}
-        <BlurView intensity={80} tint="dark" style={{ backgroundColor: GLASS_BG_DEEP, borderRadius: 28, borderWidth: 1, borderColor: GLASS_BORDER, marginHorizontal: 16, marginBottom: 24, padding: 0, shadowColor: '#000', shadowOpacity: 0.18, shadowRadius: 16, shadowOffset: { width: 0, height: 8 }, elevation: 8, overflow: 'hidden' }}>
-          <Text style={{ fontFamily: 'Inter_700Bold', fontSize: 18, color: WHITE, marginBottom: 0, marginTop: 18, marginLeft: 24 }}>Your storage</Text>
-          <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 18, paddingHorizontal: 24, justifyContent: 'space-between' }}>
-            <View style={{ flex: 1, alignItems: 'center' }}>
-              <Text style={{ color: WHITE, fontFamily: 'Inter_700Bold', fontSize: 15, marginBottom: 4, textAlign: 'center', alignSelf: 'center' }} numberOfLines={1} adjustsFontSizeToFit>
-                {formatBytes(totalFileSize)} / {formatQuota(userProfile.storageQuota)}
-              </Text>
-              <View style={{ width: '100%', height: 10, backgroundColor: '#233', borderRadius: 6, overflow: 'hidden', marginBottom: 6 }}>
-                {(() => {
-                  let percent = userProfile.storageQuota && userProfile.storageQuota > 0 ? (totalFileSize / userProfile.storageQuota) * 100 : 0;
-                  let barWidth = percent > 0 && percent < 0.5 ? 4 : `${Math.min(100, percent)}%`;
-                  return (
-                    <View style={{ width: barWidth, height: '100%', backgroundColor: BLUE_ACCENT, borderRadius: 6 }} />
-                  );
-                })()}
-          </View>
-              <Text style={{ color: '#aaa', fontFamily: 'Inter_400Regular', fontSize: 11 }}>
-                {userProfile.storageQuota && userProfile.storageQuota > 0
-                  ? ((totalFileSize / userProfile.storageQuota) * 100).toFixed(2) + '% used'
-                  : '0% used'}
-            </Text>
-            </View>
-          </View>
-          <TouchableOpacity style={{ backgroundColor: BLUE_ACCENT, borderRadius: 18, paddingVertical: 14, paddingHorizontal: 0, marginHorizontal: 24, marginBottom: 18, marginTop: 0, width: '90%', alignSelf: 'center', shadowColor: BLUE_ACCENT, shadowOpacity: 0.18, shadowRadius: 12, shadowOffset: { width: 0, height: 4 }, elevation: 6 }} activeOpacity={0.85} onPress={() => navigation.navigate('ManagePlan', { userEmail: userProfile.email })}>
-            <Text style={{ color: WHITE, fontFamily: 'Inter_700Bold', fontSize: 17, textAlign: 'center', letterSpacing: 0.2 }}>Upgrade</Text>
-            </TouchableOpacity>
-        </BlurView>
-
-        {/* Security Section */}
-        <BlurView intensity={80} tint="dark" style={{ backgroundColor: GLASS_BG_DEEP, borderRadius: 28, borderWidth: 1, borderColor: GLASS_BORDER, marginHorizontal: 16, marginBottom: 24, padding: 0, shadowColor: '#000', shadowOpacity: 0.18, shadowRadius: 16, shadowOffset: { width: 0, height: 8 }, elevation: 8, overflow: 'hidden' }}>
-          <Text style={{ fontFamily: 'Inter_700Bold', fontSize: 18, color: WHITE, marginBottom: 0, marginTop: 18, marginLeft: 24 }}>Security</Text>
-          {securityOptions.map((item, idx) => (
-            <TouchableOpacity
-              key={idx}
-              style={{ flexDirection: 'row', alignItems: 'center', borderBottomWidth: idx !== securityOptions.length-1 ? 1 : 0, borderColor: GLASS_BORDER, paddingVertical: 18, paddingHorizontal: 24 }}
-              activeOpacity={0.85}
-              onPress={() => {
-                if (item.label === 'Change password') navigation.navigate('ChangePassword');
-                if (item.label === 'Two-factor authentication') navigation.navigate('TwoFactor');
-              }}
-            >
-              <Feather name={item.icon} size={22} color={BLUE_ACCENT} style={{ marginRight: 14 }} />
-                    <Text style={{ fontFamily: 'Inter_400Regular', fontSize: 16, color: WHITE }}>{item.label}</Text>
-            </TouchableOpacity>
-          ))}
-                </BlurView>
-
-        {/* 24/7 Support Section (image and main text only) */}
-        <View style={{ alignItems: 'center', marginBottom: 32, width: '100%' }}>
-          <View style={{ width: '100%', aspectRatio: 1.8, marginBottom: 10 }}>
-            <Image source={NerdBro} style={{ width: '100%', height: '100%' }} resizeMode="cover" />
-          </View>
-          <Text style={{ fontFamily: 'Inter_700Bold', fontSize: 22, color: WHITE, textAlign: 'center' }}>24/7 Support</Text>
         </View>
 
-        {/* Connected Apps Section */}
-        <BlurView intensity={80} tint="dark" style={{ backgroundColor: GLASS_BG_DEEP, borderRadius: 28, borderWidth: 1, borderColor: GLASS_BORDER, marginHorizontal: 16, marginBottom: 24, padding: 0, shadowColor: '#000', shadowOpacity: 0.18, shadowRadius: 16, shadowOffset: { width: 0, height: 8 }, elevation: 8, overflow: 'hidden' }}>
-          <Text style={{ fontFamily: 'Inter_700Bold', fontSize: 18, color: WHITE, marginBottom: 0, marginTop: 18, marginLeft: 24 }}>Connected apps</Text>
-              {connectedApps.map((item, idx) => (
-            <View
-              key={idx}
-              style={{ flexDirection: 'row', alignItems: 'center', borderBottomWidth: idx !== connectedApps.length-1 ? 1 : 0, borderColor: GLASS_BORDER, paddingVertical: 18, paddingHorizontal: 24 }}
-            >
-              <Feather name={item.icon} size={22} color={BLUE_ACCENT} style={{ marginRight: 14 }} />
-                    <Text style={{ fontFamily: 'Inter_400Regular', fontSize: 16, color: WHITE }}>{item.label}</Text>
-                  </View>
-          ))}
-                </BlurView>
+        {/* Storage Card - Dropbox Style Split Layout */}
+        <View style={{ backgroundColor: '#000000', borderRadius: 16, borderWidth: 1, borderColor: '#333333', marginHorizontal: 16, marginTop: 24, marginBottom: 16, overflow: 'hidden' }}>
 
-        {/* Recent Logins Section */}
-        <BlurView intensity={80} tint="dark" style={{ backgroundColor: GLASS_BG_DEEP, borderRadius: 28, borderWidth: 1, borderColor: GLASS_BORDER, marginHorizontal: 16, marginBottom: 24, padding: 0, shadowColor: '#000', shadowOpacity: 0.18, shadowRadius: 16, shadowOffset: { width: 0, height: 8 }, elevation: 8, overflow: 'hidden' }}>
-          <Text style={{ fontFamily: 'Inter_700Bold', fontSize: 18, color: WHITE, marginBottom: 0, marginTop: 18, marginLeft: 24 }}>Recent logins</Text>
-          {recentLogins.map((item, idx) => (
-            <View
-              key={idx}
-              style={{ flexDirection: 'row', alignItems: 'center', borderBottomWidth: idx !== recentLogins.length-1 ? 1 : 0, borderColor: GLASS_BORDER, paddingVertical: 18, paddingHorizontal: 24 }}
-            >
-              <Feather name={item.icon} size={22} color={BLUE_ACCENT} style={{ marginRight: 14 }} />
-                    <Text style={{ fontFamily: 'Inter_400Regular', fontSize: 16, color: WHITE }}>{item.label}</Text>
+          {/* Header */}
+          <View style={{ paddingHorizontal: 20, paddingTop: 20, paddingBottom: 16 }}>
+            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+              <View style={{ backgroundColor: '#1D9BF0', borderRadius: 8, padding: 8, marginRight: 12 }}>
+                <Text style={{ fontSize: 16, color: '#FFFFFF' }}>☁️</Text>
+              </View>
+              <View style={{ flex: 1 }}>
+                <Text style={{ fontFamily: 'Inter_700Bold', fontSize: 16, color: '#FFFFFF', marginBottom: 2 }}>CloudStore Storage</Text>
+                <Text style={{ fontFamily: 'Inter_400Regular', fontSize: 14, color: '#8B98A5' }}>
+                  {formatBytes(totalFileSize)} of {formatQuota(userProfile.storageQuota)} used
+                </Text>
+              </View>
             </View>
-          ))}
-        </BlurView>
+          </View>
+
+          {/* Split Content - Two Halves */}
+          <View style={{ flexDirection: 'row', minHeight: 120 }}>
+
+            {/* Left Half - Circular Progress */}
+            <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', paddingVertical: 20, borderRightWidth: 1, borderRightColor: '#333333' }}>
+              {(() => {
+                let percent = userProfile.storageQuota && userProfile.storageQuota > 0 ? (totalFileSize / userProfile.storageQuota) * 100 : 0;
+                let displayPercent = Math.min(100, Math.max(0, percent)); // Ensure it's between 0-100
+
+                return (
+                  <View style={{ alignItems: 'center' }}>
+                    {/* Circular Progress Indicator */}
+                    <View style={{
+                      width: 70,
+                      height: 70,
+                      borderRadius: 35,
+                      borderWidth: 6,
+                      borderColor: '#333333',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      position: 'relative'
+                    }}>
+                      {/* Progress Arc - Multiple segments for better visual */}
+                      {displayPercent > 0 && (
+                        <>
+                          {displayPercent >= 25 && <View style={{ position: 'absolute', width: 70, height: 70, borderRadius: 35, borderWidth: 6, borderColor: 'transparent', borderTopColor: '#1D9BF0', transform: [{ rotate: '0deg' }] }} />}
+                          {displayPercent >= 50 && <View style={{ position: 'absolute', width: 70, height: 70, borderRadius: 35, borderWidth: 6, borderColor: 'transparent', borderRightColor: '#1D9BF0', transform: [{ rotate: '0deg' }] }} />}
+                          {displayPercent >= 75 && <View style={{ position: 'absolute', width: 70, height: 70, borderRadius: 35, borderWidth: 6, borderColor: 'transparent', borderBottomColor: '#1D9BF0', transform: [{ rotate: '0deg' }] }} />}
+                          {displayPercent > 75 && <View style={{ position: 'absolute', width: 70, height: 70, borderRadius: 35, borderWidth: 6, borderColor: 'transparent', borderLeftColor: '#1D9BF0', transform: [{ rotate: `${((displayPercent - 75) / 25) * 90}deg` }] }} />}
+                        </>
+                      )}
+                      <Text style={{ fontFamily: 'Inter_700Bold', fontSize: 14, color: '#FFFFFF' }}>
+                        {displayPercent.toFixed(1)}%
+                      </Text>
+                    </View>
+                    <Text style={{ fontFamily: 'Inter_400Regular', fontSize: 12, color: '#8B98A5', marginTop: 8, textAlign: 'center' }}>
+                      Storage used
+                    </Text>
+                  </View>
+                );
+              })()}
+            </View>
+
+            {/* Right Half - Upgrade Button */}
+            <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 16, paddingVertical: 20 }}>
+              <TouchableOpacity
+                style={{
+                  backgroundColor: '#1D9BF0',
+                  borderRadius: 12,
+                  paddingVertical: 14,
+                  paddingHorizontal: 20,
+                  width: '100%',
+                  alignItems: 'center'
+                }}
+                activeOpacity={0.8}
+                onPress={() => navigation.navigate('ManagePlan', { userEmail: userProfile.email })}
+              >
+                <Text style={{ color: '#FFFFFF', fontFamily: 'Inter_700Bold', fontSize: 15, marginBottom: 4 }}>Upgrade to Plus</Text>
+                <Text style={{ color: '#FFFFFF', fontFamily: 'Inter_400Regular', fontSize: 12, opacity: 0.9 }}>Get more storage</Text>
+              </TouchableOpacity>
+
+              <Text style={{ fontFamily: 'Inter_400Regular', fontSize: 11, color: '#8B98A5', marginTop: 12, textAlign: 'center' }}>
+                Starting at 60 cedis/month
+              </Text>
+            </View>
+          </View>
+        </View>
+
+        {/* Security Section Header */}
+        <View style={{ paddingHorizontal: 16, paddingVertical: 12 }}>
+          <Text style={{ fontFamily: 'Inter_700Bold', fontSize: 13, color: '#8B98A5', textTransform: 'uppercase', letterSpacing: 0.5 }}>Security</Text>
+        </View>
+
+        {/* Security Items */}
+        {securityOptions.map((item, idx) => (
+          <TouchableOpacity
+            key={idx}
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              paddingHorizontal: 16,
+              paddingVertical: 14,
+              borderBottomWidth: idx !== securityOptions.length - 1 ? 0.5 : 0,
+              borderBottomColor: '#333333'
+            }}
+            activeOpacity={0.8}
+            onPress={() => {
+              if (item.label === 'Change password') navigation.navigate('ChangePassword');
+              if (item.label === 'Two-factor authentication') navigation.navigate('TwoFactor');
+            }}
+          >
+            <Feather name={item.icon} size={20} color="#1D9BF0" style={{ marginRight: 12 }} />
+            <Text style={{ fontFamily: 'Inter_400Regular', fontSize: 16, color: '#FFFFFF', flex: 1 }}>{item.label}</Text>
+            <Feather name="chevron-right" size={16} color="#8B98A5" />
+          </TouchableOpacity>
+        ))}
+
+        {/* Connected Apps Section Header */}
+        <View style={{ paddingHorizontal: 16, paddingVertical: 12, marginTop: 24 }}>
+          <Text style={{ fontFamily: 'Inter_700Bold', fontSize: 13, color: '#8B98A5', textTransform: 'uppercase', letterSpacing: 0.5 }}>Connected Apps</Text>
+        </View>
+
+        {/* Connected Apps Items */}
+        {connectedApps.map((item, idx) => (
+          <View
+            key={idx}
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              paddingHorizontal: 16,
+              paddingVertical: 14,
+              borderBottomWidth: idx !== connectedApps.length - 1 ? 0.5 : 0,
+              borderBottomColor: '#333333'
+            }}
+          >
+            <Feather name={item.icon} size={20} color="#1D9BF0" style={{ marginRight: 12 }} />
+            <Text style={{ fontFamily: 'Inter_400Regular', fontSize: 16, color: '#FFFFFF', flex: 1 }}>{item.label}</Text>
+          </View>
+        ))}
+
+        {/* Recent Logins Section Header */}
+        <View style={{ paddingHorizontal: 16, paddingVertical: 12, marginTop: 24 }}>
+          <Text style={{ fontFamily: 'Inter_700Bold', fontSize: 13, color: '#8B98A5', textTransform: 'uppercase', letterSpacing: 0.5 }}>Recent Logins</Text>
+        </View>
+
+        {/* Recent Logins Items */}
+        {recentLogins.map((item, idx) => (
+          <View
+            key={idx}
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              paddingHorizontal: 16,
+              paddingVertical: 14,
+              borderBottomWidth: idx !== recentLogins.length - 1 ? 0.5 : 0,
+              borderBottomColor: '#333333'
+            }}
+          >
+            <Feather name={item.icon} size={20} color="#1D9BF0" style={{ marginRight: 12 }} />
+            <Text style={{ fontFamily: 'Inter_400Regular', fontSize: 16, color: '#FFFFFF', flex: 1 }}>{item.label}</Text>
+          </View>
+        ))}
 
         {/* Logout Button */}
-          <TouchableOpacity style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', borderRadius: 28, marginHorizontal: 16, marginTop: 36, paddingVertical: 20, backgroundColor: BLUE_ACCENT, shadowOpacity: 0.18, shadowRadius: 12, elevation: 10 }} onPress={() => setShowLogoutModal(true)} activeOpacity={0.85}>
-            <Text style={{ fontFamily: 'Inter_700Bold', fontSize: 19, textAlign: 'center', color: WHITE }}>Log Out</Text>
-            <Feather name="log-out" size={20} color={WHITE} style={{ marginLeft: 8 }} />
-          </TouchableOpacity>
+        <TouchableOpacity
+          style={{
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'center',
+            borderRadius: 16,
+            marginHorizontal: 16,
+            marginTop: 32,
+            paddingVertical: 14,
+            backgroundColor: 'transparent',
+            borderWidth: 1,
+            borderColor: '#1D9BF0'
+          }}
+          onPress={() => setShowLogoutModal(true)}
+          activeOpacity={0.8}
+        >
+          <Feather name="log-out" size={18} color="#1D9BF0" style={{ marginRight: 8 }} />
+          <Text style={{ fontFamily: 'Inter_700Bold', fontSize: 16, textAlign: 'center', color: '#1D9BF0' }}>Sign Out</Text>
+        </TouchableOpacity>
       </ScrollView>
 
-      {/* Logout Confirmation Modal */}
+      {/* Logout Confirmation Modal - Twitter X Style */}
       <Modal
         visible={showLogoutModal}
         transparent
         animationType="fade"
         onRequestClose={() => setShowLogoutModal(false)}
       >
-        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-          <BlurView intensity={120} tint="dark" style={{ ...StyleSheet.absoluteFillObject, zIndex: 1 }}>
-            <View style={{ flex: 1, backgroundColor: 'rgba(10,10,20,0.55)' }} />
-          </BlurView>
-          <BlurView intensity={90} tint="dark" style={{ backgroundColor: GLASS_BG_DEEP, borderRadius: 24, padding: 32, alignItems: 'center', width: 320, borderWidth: 1.5, borderColor: GLASS_BORDER, zIndex: 2, shadowColor: '#000', shadowOpacity: 0.22, shadowRadius: 24, shadowOffset: { width: 0, height: 12 }, elevation: 16 }}>
-            <View style={{ width: 72, height: 72, borderRadius: 36, alignItems: 'center', justifyContent: 'center', marginBottom: 20, backgroundColor: BLUE_ACCENT }}>
-                <Feather name="log-out" size={32} color={WHITE} />
+        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(0,0,0,0.8)' }}>
+          <View style={{ backgroundColor: '#000000', borderRadius: 16, padding: 24, alignItems: 'center', width: 320, borderWidth: 1, borderColor: '#333333', shadowColor: '#000', shadowOpacity: 0.5, shadowRadius: 20, shadowOffset: { width: 0, height: 10 }, elevation: 20 }}>
+            <View style={{ backgroundColor: '#1D9BF0', borderRadius: 50, padding: 16, marginBottom: 16 }}>
+              <Feather name="log-out" size={24} color="#FFFFFF" />
             </View>
-            <Text style={{ fontFamily: 'Inter_700Bold', fontSize: 23, color: WHITE, marginBottom: 12, textAlign: 'center' }}>Log Out</Text>
-            <Text style={{ fontFamily: 'Inter_400Regular', fontSize: 17, color: LIGHT_TEXT, marginBottom: 28, textAlign: 'center', lineHeight: 24 }}>Are you sure you want to log out of your CloudStore account?</Text>
-            <View style={{ flexDirection: 'row', gap: 16, width: '100%' }}>
+            <Text style={{ fontFamily: 'Inter_700Bold', fontSize: 18, color: '#FFFFFF', marginBottom: 8, textAlign: 'center' }}>Sign Out</Text>
+            <Text style={{ fontFamily: 'Inter_400Regular', fontSize: 14, color: '#8B98A5', marginBottom: 24, textAlign: 'center', lineHeight: 20 }}>Are you sure you want to sign out of your CloudStore account?</Text>
+            <View style={{ flexDirection: 'row', justifyContent: 'center', width: '100%', gap: 12 }}>
               <TouchableOpacity
-                style={{ flex: 1, borderRadius: 18, paddingVertical: 16, paddingHorizontal: 22, alignItems: 'center', backgroundColor: '#23272f' }}
+                style={{ backgroundColor: 'transparent', borderRadius: 20, paddingVertical: 12, paddingHorizontal: 24, flex: 1, alignItems: 'center', borderWidth: 1, borderColor: '#333333' }}
                 onPress={() => setShowLogoutModal(false)}
-                activeOpacity={0.85}
+                activeOpacity={0.8}
               >
-                <Text style={{ color: WHITE, fontFamily: 'Inter_700Bold', fontSize: 17, textAlign: 'center' }}>Cancel</Text>
+                <Text style={{ color: '#FFFFFF', fontFamily: 'Inter_700Bold', fontSize: 15 }}>Cancel</Text>
               </TouchableOpacity>
               <TouchableOpacity
-                style={{ flex: 1, borderRadius: 18, paddingVertical: 16, paddingHorizontal: 22, alignItems: 'center', backgroundColor: BLUE_ACCENT }}
+                style={{ backgroundColor: '#1D9BF0', borderRadius: 20, paddingVertical: 12, paddingHorizontal: 24, flex: 1, alignItems: 'center' }}
                 onPress={async () => {
                   setShowLogoutModal(false);
                   await logout();
                   navigation.getParent()?.reset({ index: 0, routes: [{ name: 'Onboarding' }] });
                 }}
-                activeOpacity={0.85}
+                activeOpacity={0.8}
               >
-                <Text style={{ color: WHITE, fontFamily: 'Inter_700Bold', fontSize: 17, textAlign: 'center' }}>Log Out</Text>
+                <Text style={{ color: '#FFFFFF', fontFamily: 'Inter_700Bold', fontSize: 15 }}>Sign Out</Text>
               </TouchableOpacity>
             </View>
-          </BlurView>
+          </View>
         </View>
       </Modal>
     </SafeAreaView>
-    </LinearGradient>
+    </View>
   );
 }
 
@@ -369,7 +451,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#18213a',
     borderRadius: 28,
     borderWidth: 1,
-    borderColor: GLASS_BORDER,
+    borderColor: 'rgba(255,255,255,0.10)', // Fallback since this style is unused
     shadowColor: '#000',
     shadowOpacity: 0.18,
     shadowRadius: 16,
@@ -403,7 +485,7 @@ const styles = StyleSheet.create({
     height: 100,
     borderRadius: 50,
     borderWidth: 3,
-    borderColor: BLUE_ACCENT,
+    borderColor: '#2979FF', // Fallback since this style is unused
     backgroundColor: '#1a237e',
   },
   editAvatarOverlay: {
@@ -413,8 +495,8 @@ const styles = StyleSheet.create({
     borderRadius: 18,
     padding: 8,
     borderWidth: 2,
-    backgroundColor: BLUE_ACCENT,
-    borderColor: GLASS_BG_DEEP,
+    backgroundColor: '#2979FF', // Fallback since this style is unused
+    borderColor: 'rgba(20,40,80,0.32)', // Fallback since this style is unused
   },
   profileTextWrap: {
     flex: 1,
@@ -427,13 +509,13 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: 2,
     textAlign: 'left',
-    color: WHITE,
+    color: '#fff', // Fallback since this style is unused
   },
   email: {
     fontSize: 14,
     marginBottom: 8,
     textAlign: 'left',
-    color: LIGHT_TEXT,
+    color: '#e0e6f0', // Fallback since this style is unused
   },
   planStorageCard: {
     marginBottom: 14,
@@ -448,27 +530,27 @@ const styles = StyleSheet.create({
   planLabel: {
     fontSize: 15,
     fontWeight: 'bold',
-    color: WHITE,
+    color: '#fff', // Fallback since this style is unused
   },
   upgradeBtn: {
-    backgroundColor: WHITE,
+    backgroundColor: '#fff', // Fallback since this style is unused
     borderRadius: 24,
     paddingVertical: 12,
     paddingHorizontal: 28,
     flexDirection: 'row',
     alignItems: 'center',
-    shadowColor: BLUE_ACCENT,
+    shadowColor: '#2979FF', // Fallback since this style is unused
     shadowOpacity: 0.10,
     shadowRadius: 8,
     elevation: 6,
   },
   upgradeBtnText: {
-    color: BLUE_ACCENT,
+    color: '#2979FF', // Fallback since this style is unused
     fontWeight: 'bold',
     fontSize: 17,
   },
   storageText: {
-    color: LIGHT_TEXT,
+    color: '#e0e6f0', // Fallback since this style is unused
     fontSize: 16,
     marginTop: 6,
     fontWeight: '500',
@@ -477,7 +559,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     marginBottom: 10,
-    color: WHITE,
+    color: '#fff', // Fallback since this style is unused
     fontFamily: 'Inter_700Bold',
     textAlign: 'left',
   },
@@ -501,14 +583,14 @@ const styles = StyleSheet.create({
     shadowRadius: 12,
     shadowOffset: { width: 0, height: 4 },
     elevation: 4,
-    backgroundColor: GLASS_BG_DEEP,
+    backgroundColor: 'rgba(20,40,80,0.32)',
   },
   specIcon: {
     marginBottom: 10,
   },
   specLabel: {
     fontSize: 16,
-    color: WHITE,
+    color: '#fff', // Fallback since this style is unused
     fontWeight: '500',
     textAlign: 'center',
   },
@@ -520,8 +602,8 @@ const styles = StyleSheet.create({
     marginHorizontal: 18,
     marginTop: 12,
     paddingVertical: 10,
-    backgroundColor: BLUE_ACCENT,
-    shadowColor: BLUE_ACCENT,
+    backgroundColor: '#2979FF', // Fallback since this style is unused
+    shadowColor: '#2979FF', // Fallback since this style is unused
     shadowOpacity: 0.08,
     shadowRadius: 6,
     elevation: 4,
@@ -532,7 +614,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 16,
     textAlign: 'center',
-    color: WHITE,
+    color: '#fff', // Fallback since this style is unused
     fontFamily: 'Inter_700Bold',
   },
   // Modal Styles
@@ -548,9 +630,9 @@ const styles = StyleSheet.create({
     width: '85%',
     maxWidth: 360,
     alignItems: 'center',
-    backgroundColor: GLASS_BG_DEEP,
+    backgroundColor: 'rgba(20,40,80,0.32)', // Fallback since this style is unused
     borderWidth: 1,
-    borderColor: GLASS_BORDER,
+    borderColor: 'rgba(255,255,255,0.10)', // Fallback since this style is unused
     shadowColor: '#000',
     shadowOpacity: 0.18,
     shadowRadius: 24,
@@ -564,21 +646,21 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: 20,
-    backgroundColor: BLUE_ACCENT,
+    backgroundColor: '#2979FF', // Fallback since this style is unused
   },
   modalTitle: {
     fontSize: 23,
     fontWeight: 'bold',
     marginBottom: 12,
     textAlign: 'center',
-    color: WHITE,
+    color: '#fff', // Fallback since this style is unused
   },
   modalMessage: {
     fontSize: 17,
     textAlign: 'center',
     marginBottom: 28,
     lineHeight: 24,
-    color: LIGHT_TEXT,
+    color: '#e0e6f0', // Fallback since this style is unused
   },
   modalButtons: {
     flexDirection: 'row',
@@ -597,12 +679,12 @@ const styles = StyleSheet.create({
     backgroundColor: '#23272f',
   },
   modalButtonConfirm: {
-    backgroundColor: BLUE_ACCENT,
+    backgroundColor: '#2979FF', // Fallback since this style is unused
   },
   modalButtonText: {
     fontSize: 17,
     fontWeight: '600',
-    color: WHITE,
+    color: '#fff', // Fallback since this style is unused
   },
   // New styles for outerGlassCard and innerGlassPad
   outerGlassCard: {

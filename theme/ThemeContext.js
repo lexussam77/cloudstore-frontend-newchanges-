@@ -11,6 +11,29 @@ export const useTheme = () => {
   return context;
 };
 
+// Theme constants function
+export const getThemeConstants = (isDarkMode, themeVariant = 'default') => {
+  if (themeVariant === 'twitter') {
+    return {
+      gradient: ['#000000', '#000000', '#000000'], // Pure black, no gradient
+      glassBg: 'rgba(0, 0, 0, 0.8)', // Pure black with transparency
+      glassBorder: 'rgba(255, 255, 255, 0.1)', // White border with low opacity
+      primaryText: '#ffffff', // Pure white text
+      secondaryText: '#8b98a5', // Twitter's secondary text color
+      accent: '#1d9bf0', // Twitter blue
+    };
+  }
+
+  return {
+    gradient: isDarkMode ? ['#0a0f1c', '#12203a', '#1a2a4f'] : ['#f8f9fa', '#e9ecef', '#dee2e6'],
+    glassBg: isDarkMode ? 'rgba(20,40,80,0.32)' : 'rgba(255,255,255,0.1)',
+    glassBorder: isDarkMode ? 'rgba(255,255,255,0.10)' : 'rgba(0,0,0,0.1)',
+    primaryText: isDarkMode ? '#fff' : '#1a1a1a',
+    secondaryText: isDarkMode ? '#e0e6f0' : '#6b7280',
+    accent: '#2979FF',
+  };
+};
+
 const lightTheme = {
   // Background colors
   background: '#FFFFFF',
@@ -119,8 +142,63 @@ const darkTheme = {
   statusBarBackground: '#0F0F0F',
 };
 
+const twitterTheme = {
+  // Background colors - Pure Twitter black and white
+  background: '#000000', // Pure black
+  surface: '#000000', // Pure black
+  card: '#000000', // Pure black
+  elevated: '#000000', // Pure black
+
+  // Text colors
+  text: '#FFFFFF', // Pure white
+  textSecondary: '#8B98A5', // Twitter's secondary text
+  textTertiary: '#6E767D', // Twitter's tertiary text
+  textInverse: '#000000', // Black text for white backgrounds
+
+  // Primary colors
+  primary: '#1D9BF0', // Twitter blue
+  primaryLight: '#1A8CD8',
+  primaryDark: '#1A8CD8',
+
+  // Secondary colors
+  secondary: '#000000', // Pure black
+  secondaryLight: '#16181C', // Very dark gray for subtle variations
+  secondaryDark: '#000000', // Pure black
+
+  // Status colors
+  success: '#00BA7C', // Twitter green
+  warning: '#FFD400', // Twitter yellow
+  error: '#F4212E', // Twitter red
+  info: '#1D9BF0', // Twitter blue
+
+  // Border colors
+  border: '#2F3336', // Twitter's border color
+  borderLight: '#3E4144',
+  borderDark: '#1C1F23',
+
+  // Shadow colors
+  shadow: '#000000',
+  shadowLight: '#000000',
+
+  // Search bar
+  searchBackground: '#202327', // Twitter's search background
+  searchText: '#FFFFFF',
+  searchPlaceholder: '#8B98A5',
+
+  // File icons
+  fileIcon: '#8B98A5',
+
+  // Overlay
+  overlay: 'rgba(0, 0, 0, 0.8)',
+
+  // Status bar
+  statusBar: 'light',
+  statusBarBackground: '#000000',
+};
+
 export const ThemeProvider = ({ children }) => {
-  const [isDarkMode, setIsDarkMode] = useState(false);
+  const [isDarkMode, setIsDarkMode] = useState(true);
+  const [themeVariant, setThemeVariant] = useState('default');
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -130,12 +208,17 @@ export const ThemeProvider = ({ children }) => {
   const loadThemePreference = async () => {
     try {
       const savedTheme = await AsyncStorage.getItem('theme_preference');
+      const savedVariant = await AsyncStorage.getItem('theme_variant');
+      
       if (savedTheme !== null) {
         setIsDarkMode(savedTheme === 'dark');
       } else {
-        // Default to dark mode permanently
         setIsDarkMode(true);
         await AsyncStorage.setItem('theme_preference', 'dark');
+      }
+      
+      if (savedVariant !== null) {
+        setThemeVariant(savedVariant);
       }
     } catch (error) {
       console.error('Error loading theme preference:', error);
@@ -155,12 +238,23 @@ export const ThemeProvider = ({ children }) => {
     }
   };
 
-  const theme = isDarkMode ? darkTheme : lightTheme;
+  // Select theme based on variant and dark mode preference
+  let theme;
+  if (themeVariant === 'twitter') {
+    theme = twitterTheme;
+  } else {
+    theme = isDarkMode ? darkTheme : lightTheme;
+  }
+
+  const constants = getThemeConstants(isDarkMode, themeVariant);
 
   const value = {
     theme,
+    constants,
     isDarkMode,
+    themeVariant,
     toggleTheme,
+    setThemeVariant,
     isLoading,
   };
 

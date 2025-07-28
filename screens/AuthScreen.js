@@ -14,12 +14,7 @@ import { useFonts, Inter_400Regular, Inter_700Bold } from '@expo-google-fonts/in
 export default function AuthScreen({ navigation }) {
   let [fontsLoaded] = useFonts({ Inter_400Regular, Inter_700Bold });
   // Move the fontsLoaded check below, after all hooks
-  const DEEP_BLUE_GRADIENT = ['#0a0f1c', '#12203a', '#1a2a4f'];
-  const GLASS_BG_DEEP = 'rgba(20,40,80,0.32)';
-  const GLASS_BORDER = 'rgba(255,255,255,0.10)';
-  const WHITE = '#fff';
-  const BLUE_ACCENT = '#2979FF';
-  const { theme } = useTheme();
+  const { theme, constants } = useTheme();
   const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -174,18 +169,18 @@ export default function AuthScreen({ navigation }) {
   }
 
   return (
-    <LinearGradient colors={DEEP_BLUE_GRADIENT} style={{ flex: 1 }}>
+    <LinearGradient colors={constants.gradient} style={{ flex: 1 }}>
       <SafeAreaView style={{ flex: 1, justifyContent: 'center', alignItems: 'center', padding: 24 }}>
         {/* Logo */}
         <Animated.View
           style={{ marginBottom: 18, alignItems: 'center', transform: [{ translateY: logoAnim.interpolate({ inputRange: [0, 1], outputRange: [0, -60] }) }] }}
         >
-          <AntDesign name="cloud" size={38} color={BLUE_ACCENT} style={{ marginBottom: 2 }} />
-          <Text style={{ fontFamily: 'Inter_700Bold', fontSize: 28, color: WHITE, letterSpacing: 0.2 }}>CloudStore</Text>
+          <AntDesign name="cloud" size={38} color={constants.accent} style={{ marginBottom: 2 }} />
+          <Text style={{ fontFamily: 'Inter_700Bold', fontSize: 28, color: constants.primaryText, letterSpacing: 0.2 }}>CloudStore</Text>
         </Animated.View>
         {/* Glassy Flip Card */}
         <Animated.View style={{ width: '100%', maxWidth: 380, opacity: cardAnim, transform: [{ translateY: cardAnim.interpolate({ inputRange: [0, 1], outputRange: [30, 0] }) }] }}>
-          <BlurView intensity={90} tint="dark" style={{ backgroundColor: GLASS_BG_DEEP, borderRadius: 32, borderWidth: 1.5, borderColor: GLASS_BORDER, padding: 32, alignItems: 'center', width: '100%', shadowColor: '#000', shadowOpacity: 0.18, shadowRadius: 24, shadowOffset: { width: 0, height: 12 }, elevation: 12, overflow: 'hidden' }}>
+          <BlurView intensity={90} tint="dark" style={{ backgroundColor: constants.glassBg, borderRadius: 32, borderWidth: 1.5, borderColor: constants.glassBorder, padding: 32, alignItems: 'center', width: '100%', shadowColor: '#000', shadowOpacity: 0.18, shadowRadius: 24, shadowOffset: { width: 0, height: 12 }, elevation: 12, overflow: 'hidden' }}>
             <View style={{ height: isLogin ? 340 : 480, width: '100%', alignItems: 'center', justifyContent: isLogin ? 'center' : 'flex-start', marginTop: isLogin ? 10 : 0, paddingTop: !isLogin ? 14 : 0, paddingBottom: !isLogin ? 8 : 0 }}>
             <Animated.View
                 style={[{ position: 'absolute', width: '100%', backfaceVisibility: 'hidden', transform: [{ rotateY: frontInterpolate }] }]}
@@ -193,31 +188,31 @@ export default function AuthScreen({ navigation }) {
             >
             {isLogin && (
                   <View style={{ width: '100%' }}>
-                    <Text style={{ fontFamily: 'Inter_700Bold', fontSize: 22, color: WHITE, marginBottom: 18, textAlign: 'center' }}>Log In</Text>
+                    <Text style={{ fontFamily: 'Inter_700Bold', fontSize: 22, color: constants.primaryText, marginBottom: 18, textAlign: 'center' }}>Log In</Text>
                 <TextInput
-                      style={{ width: '100%', borderRadius: 14, padding: 16, fontSize: 16, marginBottom: 16, borderWidth: 1.5, fontFamily: 'Inter_400Regular', backgroundColor: 'rgba(255,255,255,0.08)', color: WHITE, borderColor: GLASS_BORDER }}
+                      style={{ width: '100%', borderRadius: 14, padding: 16, fontSize: 16, marginBottom: 16, borderWidth: 1.5, fontFamily: 'Inter_400Regular', backgroundColor: 'rgba(255,255,255,0.08)', color: constants.primaryText, borderColor: constants.glassBorder }}
                   placeholder="Email or Username"
                   value={email}
                   onChangeText={setEmail}
-                      placeholderTextColor={WHITE + '99'}
+                      placeholderTextColor={constants.primaryText + '99'}
                   onFocus={() => setFocusedInput('identifier')}
                   onBlur={() => setFocusedInput('')}
                 />
                 <TextInput
-                      style={{ width: '100%', borderRadius: 14, padding: 16, fontSize: 16, marginBottom: 16, borderWidth: 1.5, fontFamily: 'Inter_400Regular', backgroundColor: 'rgba(255,255,255,0.08)', color: WHITE, borderColor: GLASS_BORDER }}
+                      style={{ width: '100%', borderRadius: 14, padding: 16, fontSize: 16, marginBottom: 16, borderWidth: 1.5, fontFamily: 'Inter_400Regular', backgroundColor: 'rgba(255,255,255,0.08)', color: constants.primaryText, borderColor: constants.glassBorder }}
                   placeholder="Password"
                   value={password}
                   onChangeText={setPassword}
                   secureTextEntry
-                      placeholderTextColor={WHITE + '99'}
+                      placeholderTextColor={constants.primaryText + '99'}
                   onFocus={() => setFocusedInput('password')}
                   onBlur={() => setFocusedInput('')}
                 />
-                    <TouchableOpacity style={{ backgroundColor: BLUE_ACCENT, borderRadius: 18, paddingVertical: 16, alignItems: 'center', width: '100%', marginBottom: 10, shadowOpacity: 0.10, shadowRadius: 8, shadowOffset: { width: 0, height: 2 }, elevation: 2 }} activeOpacity={0.85} onPress={handleSubmit} disabled={loading}>
-                      {loading ? <ActivityIndicator color={WHITE} /> : <Text style={{ color: WHITE, fontFamily: 'Inter_700Bold', fontSize: 17, textAlign: 'center' }}>Log in</Text>}
+                    <TouchableOpacity style={{ backgroundColor: constants.accent, borderRadius: 18, paddingVertical: 16, alignItems: 'center', width: '100%', marginBottom: 10, shadowOpacity: 0.10, shadowRadius: 8, shadowOffset: { width: 0, height: 2 }, elevation: 2 }} activeOpacity={0.85} onPress={handleSubmit} disabled={loading}>
+                      {loading ? <ActivityIndicator color={constants.primaryText} /> : <Text style={{ color: constants.primaryText, fontFamily: 'Inter_700Bold', fontSize: 17, textAlign: 'center' }}>Log in</Text>}
                 </TouchableOpacity>
                     <TouchableOpacity onPress={flipCard} style={{ marginTop: 8 }}>
-                      <Text style={{ color: WHITE, fontFamily: 'Inter_400Regular', fontSize: 15, textAlign: 'center' }}>Don't have an account? <Text style={{ color: BLUE_ACCENT, fontFamily: 'Inter_700Bold' }}>Sign up</Text></Text>
+                      <Text style={{ color: constants.primaryText, fontFamily: 'Inter_400Regular', fontSize: 15, textAlign: 'center' }}>Don't have an account? <Text style={{ color: constants.accent, fontFamily: 'Inter_700Bold' }}>Sign up</Text></Text>
                 </TouchableOpacity>
               </View>
             )}
@@ -228,50 +223,50 @@ export default function AuthScreen({ navigation }) {
             >
             {!isLogin && (
                   <View style={{ width: '100%' }}>
-                    <Text style={{ fontFamily: 'Inter_700Bold', fontSize: 22, color: WHITE, marginTop: 0, marginBottom: 6, textAlign: 'center' }}>Sign Up</Text>
+                    <Text style={{ fontFamily: 'Inter_700Bold', fontSize: 22, color: constants.primaryText, marginTop: 0, marginBottom: 6, textAlign: 'center' }}>Sign Up</Text>
                 <TextInput
-                      style={{ width: '100%', borderRadius: 14, padding: 16, fontSize: 16, marginBottom: 16, borderWidth: 1.5, fontFamily: 'Inter_400Regular', backgroundColor: 'rgba(255,255,255,0.08)', color: WHITE, borderColor: GLASS_BORDER }}
+                      style={{ width: '100%', borderRadius: 14, padding: 16, fontSize: 16, marginBottom: 16, borderWidth: 1.5, fontFamily: 'Inter_400Regular', backgroundColor: 'rgba(255,255,255,0.08)', color: constants.primaryText, borderColor: constants.glassBorder }}
                   placeholder="Full name"
                   value={name}
                   onChangeText={setName}
-                      placeholderTextColor={WHITE + '99'}
+                      placeholderTextColor={constants.primaryText + '99'}
                   onFocus={() => setFocusedInput('name')}
                   onBlur={() => setFocusedInput('')}
                 />
                 <TextInput
-                      style={{ width: '100%', borderRadius: 14, padding: 16, fontSize: 16, marginBottom: 16, borderWidth: 1.5, fontFamily: 'Inter_400Regular', backgroundColor: 'rgba(255,255,255,0.08)', color: WHITE, borderColor: GLASS_BORDER }}
+                      style={{ width: '100%', borderRadius: 14, padding: 16, fontSize: 16, marginBottom: 16, borderWidth: 1.5, fontFamily: 'Inter_400Regular', backgroundColor: 'rgba(255,255,255,0.08)', color: constants.primaryText, borderColor: constants.glassBorder }}
                   placeholder="Email address"
                   value={email}
                   onChangeText={setEmail}
-                      placeholderTextColor={WHITE + '99'}
+                      placeholderTextColor={constants.primaryText + '99'}
                   onFocus={() => setFocusedInput('email')}
                   onBlur={() => setFocusedInput('')}
                 />
                 <TextInput
-                      style={{ width: '100%', borderRadius: 14, padding: 16, fontSize: 16, marginBottom: 16, borderWidth: 1.5, fontFamily: 'Inter_400Regular', backgroundColor: 'rgba(255,255,255,0.08)', color: WHITE, borderColor: GLASS_BORDER }}
+                      style={{ width: '100%', borderRadius: 14, padding: 16, fontSize: 16, marginBottom: 16, borderWidth: 1.5, fontFamily: 'Inter_400Regular', backgroundColor: 'rgba(255,255,255,0.08)', color: constants.primaryText, borderColor: constants.glassBorder }}
                   placeholder="Password"
                   value={password}
                   onChangeText={setPassword}
                   secureTextEntry
-                      placeholderTextColor={WHITE + '99'}
+                      placeholderTextColor={constants.primaryText + '99'}
                   onFocus={() => setFocusedInput('password')}
                   onBlur={() => setFocusedInput('')}
                 />
                 <TextInput
-                      style={{ width: '100%', borderRadius: 14, padding: 16, fontSize: 16, marginBottom: 16, borderWidth: 1.5, fontFamily: 'Inter_400Regular', backgroundColor: 'rgba(255,255,255,0.08)', color: WHITE, borderColor: GLASS_BORDER }}
+                      style={{ width: '100%', borderRadius: 14, padding: 16, fontSize: 16, marginBottom: 16, borderWidth: 1.5, fontFamily: 'Inter_400Regular', backgroundColor: 'rgba(255,255,255,0.08)', color: constants.primaryText, borderColor: constants.glassBorder }}
                       placeholder="Confirm password"
                   value={confirmPassword}
                   onChangeText={setConfirmPassword}
                   secureTextEntry
-                      placeholderTextColor={WHITE + '99'}
+                      placeholderTextColor={constants.primaryText + '99'}
                   onFocus={() => setFocusedInput('confirmPassword')}
                   onBlur={() => setFocusedInput('')}
                 />
-                    <TouchableOpacity style={{ backgroundColor: BLUE_ACCENT, borderRadius: 18, paddingVertical: 16, alignItems: 'center', width: '100%', marginBottom: 10, shadowOpacity: 0.10, shadowRadius: 8, shadowOffset: { width: 0, height: 2 }, elevation: 2 }} activeOpacity={0.85} onPress={handleSubmit} disabled={loading}>
-                      {loading ? <ActivityIndicator color={WHITE} /> : <Text style={{ color: WHITE, fontFamily: 'Inter_700Bold', fontSize: 17, textAlign: 'center' }}>Sign up</Text>}
+                    <TouchableOpacity style={{ backgroundColor: constants.accent, borderRadius: 18, paddingVertical: 16, alignItems: 'center', width: '100%', marginBottom: 10, shadowOpacity: 0.10, shadowRadius: 8, shadowOffset: { width: 0, height: 2 }, elevation: 2 }} activeOpacity={0.85} onPress={handleSubmit} disabled={loading}>
+                      {loading ? <ActivityIndicator color={constants.primaryText} /> : <Text style={{ color: constants.primaryText, fontFamily: 'Inter_700Bold', fontSize: 17, textAlign: 'center' }}>Sign up</Text>}
                 </TouchableOpacity>
                     <TouchableOpacity onPress={flipCard} style={{ marginTop: 8 }}>
-                      <Text style={{ color: WHITE, fontFamily: 'Inter_400Regular', fontSize: 15, textAlign: 'center' }}>Already have an account? <Text style={{ color: BLUE_ACCENT, fontFamily: 'Inter_700Bold' }}>Log in</Text></Text>
+                      <Text style={{ color: constants.primaryText, fontFamily: 'Inter_400Regular', fontSize: 15, textAlign: 'center' }}>Already have an account? <Text style={{ color: constants.accent, fontFamily: 'Inter_700Bold' }}>Log in</Text></Text>
                 </TouchableOpacity>
               </View>
             )}

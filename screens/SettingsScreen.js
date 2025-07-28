@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, SectionList, Alert, ScrollView, Image, Modal, Switch } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import Feather from 'react-native-vector-icons/Feather';
 import FeedbackSVG from '../assets/images/undraw_feedback_ebmx.svg';
 import CustomPrompt from './CustomPrompt';
@@ -7,6 +8,7 @@ import { useTheme } from '../theme/ThemeContext';
 import { LinearGradient } from 'expo-linear-gradient';
 import { BlurView } from 'expo-blur';
 import { useFonts, Inter_400Regular, Inter_700Bold } from '@expo-google-fonts/inter';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const accountSettings = [
   { icon: 'file-text', label: 'Terms of service', nav: 'TermsOfService' },
@@ -39,7 +41,8 @@ const LIGHT_TEXT = '#e0e6f0';
 const BLUE_ACCENT = '#2979FF';
 
 export default function SettingsScreen({ navigation }) {
-  const { theme, isDarkMode, toggleTheme } = useTheme();
+  const { theme, constants, isDarkMode, themeVariant, toggleTheme, setThemeVariant } = useTheme();
+
   const [promptVisible, setPromptVisible] = useState(false);
   const [promptMessage, setPromptMessage] = useState('');
   const [promptSuccess, setPromptSuccess] = useState(true);
@@ -47,135 +50,179 @@ export default function SettingsScreen({ navigation }) {
   const [confirmAction, setConfirmAction] = useState('');
   let [fontsLoaded] = useFonts({ Inter_400Regular, Inter_700Bold });
   if (!fontsLoaded) return null;
+
+
+
   return (
-    <LinearGradient colors={DEEP_BLUE_GRADIENT} style={{ flex: 1 }}>
-      <TouchableOpacity style={{ position: 'absolute', top: 38, left: 18, zIndex: 10, backgroundColor: 'rgba(20,40,80,0.32)', borderRadius: 18, padding: 8 }} onPress={() => navigation.goBack()} activeOpacity={0.8}>
-        <Feather name="arrow-left" size={22} color={WHITE} />
-      </TouchableOpacity>
-      <ScrollView contentContainerStyle={{ paddingBottom: 80, paddingTop: 8 }} showsVerticalScrollIndicator={false}>
-        {/* Optional: Glassy/gradient header or illustration can go here */}
-        <View style={{ alignItems: 'center', marginTop: 24, marginBottom: 18 }}>
-          <Text style={{ fontFamily: 'Inter_700Bold', fontSize: 26, color: WHITE, letterSpacing: 0.2, textAlign: 'center' }}>Settings & Preferences</Text>
-          <Text style={{ fontFamily: 'Inter_400Regular', fontSize: 15, color: LIGHT_TEXT, marginTop: 6, textAlign: 'center', maxWidth: 320 }}>
-            Personalize your CloudStore experience.
-          </Text>
-        </View>
-        {/* Account Section */}
-        <BlurView intensity={80} tint="dark" style={{ backgroundColor: GLASS_BG_DEEP, borderRadius: 28, borderWidth: 1, borderColor: GLASS_BORDER, marginHorizontal: 16, marginBottom: 24, padding: 24, shadowColor: '#000', shadowOpacity: 0.18, shadowRadius: 16, shadowOffset: { width: 0, height: 8 }, elevation: 8, overflow: 'hidden' }}>
-          <Text style={{ fontFamily: 'Inter_700Bold', fontSize: 18, color: WHITE, marginBottom: 14 }}>Your account</Text>
-          {accountSettings.map((item, idx) => (
-            <TouchableOpacity
-              key={idx}
-              style={{ flexDirection: 'row', alignItems: 'center', borderBottomWidth: idx !== accountSettings.length-1 ? 1 : 0, borderColor: GLASS_BORDER, paddingVertical: 18 }}
-              activeOpacity={0.85}
-              onPress={() => {
-                if (item.nav) navigation.navigate(item.nav);
-                else if (item.label.includes('App version')) Alert.alert('CloudStore App Version', '428.2.2');
-              }}
-            >
-              <Feather name={item.icon} size={22} color={BLUE_ACCENT} style={{ marginRight: 14 }} />
-              <Text style={{ fontFamily: 'Inter_400Regular', fontSize: 16, color: WHITE }}>{item.label}</Text>
-            </TouchableOpacity>
-          ))}
-        </BlurView>
-        {/* App Section */}
-        <BlurView intensity={80} tint="dark" style={{ backgroundColor: GLASS_BG_DEEP, borderRadius: 28, borderWidth: 1, borderColor: GLASS_BORDER, marginHorizontal: 16, marginBottom: 24, padding: 24, shadowColor: '#000', shadowOpacity: 0.18, shadowRadius: 16, shadowOffset: { width: 0, height: 8 }, elevation: 8, overflow: 'hidden' }}>
-          <Text style={{ fontFamily: 'Inter_700Bold', fontSize: 18, color: WHITE, marginBottom: 14 }}>App</Text>
-          {appSettings.map((item, idx) => (
-            <TouchableOpacity
-              key={idx}
-              style={{ flexDirection: 'row', alignItems: 'center', borderBottomWidth: idx !== appSettings.length-1 ? 1 : 0, borderColor: GLASS_BORDER, paddingVertical: 18 }}
-              activeOpacity={0.85}
-              onPress={() => {
-                if (item.nav) navigation.navigate(item.nav);
-                else if (item.label.includes('App version')) {
-                  setPromptMessage('CloudStore App Version\n428.2.2');
-                  setPromptSuccess(true);
-                  setPromptVisible(true);
-                } else if (item.label.toLowerCase().includes('reset photos tab')) {
-                  setPromptMessage('Photos tab reset successfully!');
-                  setPromptSuccess(true);
-                  setPromptVisible(true);
-                } else if (item.label.toLowerCase().includes('clear cache')) {
-                  setConfirmAction('cache');
-                  setConfirmVisible(true);
-                } else if (item.label.toLowerCase().includes('search history')) {
-                  setConfirmAction('search');
-                  setConfirmVisible(true);
-                }
-              }}
-            >
-              <Feather name={item.icon} size={22} color={BLUE_ACCENT} style={{ marginRight: 14 }} />
-              <Text style={{ fontFamily: 'Inter_400Regular', fontSize: 16, color: WHITE }}>{item.label}</Text>
-            </TouchableOpacity>
-          ))}
-        </BlurView>
-        {/* Danger Zone Section */}
-        <BlurView intensity={80} tint="dark" style={{ backgroundColor: GLASS_BG_DEEP, borderRadius: 28, borderWidth: 1, borderColor: 'crimson', marginHorizontal: 16, marginBottom: 24, padding: 24, shadowColor: '#000', shadowOpacity: 0.18, shadowRadius: 16, shadowOffset: { width: 0, height: 8 }, elevation: 8, overflow: 'hidden' }}>
-          <Text style={{ fontFamily: 'Inter_700Bold', fontSize: 18, color: 'crimson', marginBottom: 14 }}>Danger Zone</Text>
-          {dangerZone.map((item, idx) => (
-            <TouchableOpacity
-              key={idx}
-              style={{ flexDirection: 'row', alignItems: 'center', borderBottomWidth: idx !== dangerZone.length-1 ? 1 : 0, borderColor: GLASS_BORDER, paddingVertical: 18 }}
-              activeOpacity={0.85}
-              onPress={() => {
-                if (item.nav) navigation.navigate(item.nav);
-              }}
-            >
-              <Feather name={item.icon} size={22} color={'crimson'} style={{ marginRight: 14 }} />
-              <Text style={{ fontFamily: 'Inter_400Regular', fontSize: 16, color: 'crimson' }}>{item.label}</Text>
-            </TouchableOpacity>
-          ))}
-        </BlurView>
-        {/* Prompt and Modal remain unchanged */}
-      </ScrollView>
-      <CustomPrompt
-        visible={promptVisible}
-        message={promptMessage}
-        onClose={() => setPromptVisible(false)}
-        success={promptSuccess}
-      />
-      {/* Confirmation Modal */}
-      <Modal
-        visible={confirmVisible}
-        transparent
-        animationType="fade"
-        onRequestClose={() => setConfirmVisible(false)}
-      >
-        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-          <BlurView intensity={120} tint="dark" style={{ ...StyleSheet.absoluteFillObject, zIndex: 1 }}>
-            <View style={{ flex: 1, backgroundColor: 'rgba(10,10,20,0.55)' }} />
-          </BlurView>
-          <BlurView intensity={90} tint="dark" style={{ backgroundColor: GLASS_BG_DEEP, borderRadius: 24, padding: 32, alignItems: 'center', width: 320, borderWidth: 1.5, borderColor: GLASS_BORDER, zIndex: 2, shadowColor: '#000', shadowOpacity: 0.22, shadowRadius: 24, shadowOffset: { width: 0, height: 12 }, elevation: 16 }}>
-            <Text style={{ fontSize: 18, fontFamily: 'Inter_700Bold', color: WHITE, marginBottom: 22, textAlign: 'center', letterSpacing: 0.1 }}>
-              {confirmAction === 'cache' ? 'Are you sure you want to clear cache?' : 'Are you sure you want to clear search history?'}
+    <LinearGradient colors={constants.gradient} style={{ flex: 1 }}>
+      <SafeAreaView style={{ flex: 1 }}>
+        <TouchableOpacity style={{ position: 'absolute', top: 38, left: 18, zIndex: 10, backgroundColor: 'rgba(20,40,80,0.32)', borderRadius: 18, padding: 8 }} onPress={() => navigation.goBack()} activeOpacity={0.8}>
+          <Feather name="arrow-left" size={22} color={WHITE} />
+        </TouchableOpacity>
+        <ScrollView contentContainerStyle={{ paddingBottom: 80, paddingTop: 8 }} showsVerticalScrollIndicator={false}>
+          {/* Optional: Glassy/gradient header or illustration can go here */}
+          <View style={{ alignItems: 'center', marginTop: 24, marginBottom: 18 }}>
+            <Text style={{ fontFamily: 'Inter_700Bold', fontSize: 26, color: WHITE, letterSpacing: 0.2, textAlign: 'center' }}>Settings & Preferences</Text>
+            <Text style={{ fontFamily: 'Inter_400Regular', fontSize: 15, color: LIGHT_TEXT, marginTop: 6, textAlign: 'center', maxWidth: 320 }}>
+              Personalize your CloudStore experience.
             </Text>
-            <View style={{ flexDirection: 'row', justifyContent: 'center', marginTop: 8, width: '100%' }}>
+          </View>
+          {/* Settings List */}
+
+          {/* Account Section Header */}
+          <View style={{ paddingHorizontal: 16, paddingVertical: 12 }}>
+            <Text style={{ fontFamily: 'Inter_700Bold', fontSize: 13, color: LIGHT_TEXT, textTransform: 'uppercase', letterSpacing: 0.5 }}>Your account</Text>
+          </View>
+
+            {/* Account Items */}
+            {accountSettings.map((item, idx) => (
               <TouchableOpacity
-                style={{ backgroundColor: BLUE_ACCENT, borderRadius: 18, paddingVertical: 14, paddingHorizontal: 32, marginRight: 14, flex: 1, alignItems: 'center' }}
-                onPress={() => {
-                  setConfirmVisible(false);
-                  setTimeout(() => {
-                    setPromptMessage(confirmAction === 'cache' ? 'Cache cleared successfully!' : 'Search history cleared!');
-                    setPromptSuccess(true);
-                    setPromptVisible(true);
-                  }, 200);
+                key={idx}
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  paddingHorizontal: 16,
+                  paddingVertical: 14,
+                  borderBottomWidth: idx !== accountSettings.length - 1 ? 0.5 : 0,
+                  borderBottomColor: GLASS_BORDER
                 }}
                 activeOpacity={0.85}
+                onPress={() => {
+                  if (item.nav) navigation.navigate(item.nav);
+                  else if (item.label.includes('App version')) Alert.alert('CloudStore App Version', '428.2.2');
+                }}
               >
-                <Text style={{ color: WHITE, fontFamily: 'Inter_700Bold', fontSize: 16 }}>Yes</Text>
+                <Feather name={item.icon} size={20} color={BLUE_ACCENT} style={{ marginRight: 12 }} />
+                <Text style={{ fontFamily: 'Inter_400Regular', fontSize: 16, color: WHITE, flex: 1 }}>{item.label}</Text>
+                <Feather name="chevron-right" size={16} color={LIGHT_TEXT} />
               </TouchableOpacity>
+            ))}
+
+          {/* App Section Header */}
+          <View style={{ paddingHorizontal: 16, paddingVertical: 12, marginTop: 24 }}>
+            <Text style={{ fontFamily: 'Inter_700Bold', fontSize: 13, color: LIGHT_TEXT, textTransform: 'uppercase', letterSpacing: 0.5 }}>App</Text>
+          </View>
+
+            {/* App Items */}
+            {appSettings.map((item, idx) => (
               <TouchableOpacity
-                style={{ backgroundColor: 'rgba(41,121,255,0.08)', borderRadius: 18, paddingVertical: 14, paddingHorizontal: 32, flex: 1, alignItems: 'center' }}
-                onPress={() => setConfirmVisible(false)}
+                key={idx}
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  paddingHorizontal: 16,
+                  paddingVertical: 14,
+                  borderBottomWidth: idx !== appSettings.length - 1 ? 0.5 : 0,
+                  borderBottomColor: GLASS_BORDER
+                }}
                 activeOpacity={0.85}
+                onPress={() => {
+                  if (item.nav) {
+                    navigation.navigate(item.nav);
+                  } else if (item.label.includes('App version')) {
+                    setPromptMessage('CloudStore App Version\n428.2.2');
+                    setPromptSuccess(true);
+                    setPromptVisible(true);
+                  } else if (item.label.toLowerCase().includes('reset photos tab')) {
+                    setPromptMessage('Photos tab reset successfully!');
+                    setPromptSuccess(true);
+                    setPromptVisible(true);
+                  } else if (item.label.toLowerCase().includes('clear cache')) {
+                    setConfirmAction('cache');
+                    setConfirmVisible(true);
+                  } else if (item.label.toLowerCase().includes('search history')) {
+                    setConfirmAction('search');
+                    setConfirmVisible(true);
+                  }
+                }}
               >
-                <Text style={{ color: BLUE_ACCENT, fontFamily: 'Inter_700Bold', fontSize: 16 }}>No</Text>
+                <Feather name={item.icon} size={20} color={BLUE_ACCENT} style={{ marginRight: 12 }} />
+                <Text style={{ fontFamily: 'Inter_400Regular', fontSize: 16, color: WHITE, flex: 1 }}>{item.label}</Text>
+                <Feather name="chevron-right" size={16} color={LIGHT_TEXT} />
               </TouchableOpacity>
+            ))}
+
+          {/* Danger Zone Section Header */}
+          <View style={{ paddingHorizontal: 16, paddingVertical: 12, marginTop: 24 }}>
+            <Text style={{ fontFamily: 'Inter_700Bold', fontSize: 13, color: 'crimson', textTransform: 'uppercase', letterSpacing: 0.5 }}>Danger Zone</Text>
+          </View>
+
+            {/* Danger Zone Items */}
+            {dangerZone.map((item, idx) => (
+              <TouchableOpacity
+                key={idx}
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  paddingHorizontal: 16,
+                  paddingVertical: 14,
+                  borderBottomWidth: idx !== dangerZone.length - 1 ? 0.5 : 0,
+                  borderBottomColor: 'rgba(220, 38, 38, 0.2)'
+                }}
+                activeOpacity={0.85}
+                onPress={() => {
+                  if (item.nav) navigation.navigate(item.nav);
+                }}
+              >
+                <Feather name={item.icon} size={20} color={'crimson'} style={{ marginRight: 12 }} />
+                <Text style={{ fontFamily: 'Inter_400Regular', fontSize: 16, color: 'crimson', flex: 1 }}>{item.label}</Text>
+                <Feather name="chevron-right" size={16} color={'crimson'} />
+              </TouchableOpacity>
+            ))}
+
+          {/* Prompt and Modal remain unchanged */}
+        </ScrollView>
+        <CustomPrompt
+          visible={promptVisible}
+          message={promptMessage}
+          onClose={() => setPromptVisible(false)}
+          success={promptSuccess}
+        />
+        {/* Confirmation Modal - Twitter X Style */}
+        <Modal
+          visible={confirmVisible}
+          transparent
+          animationType="fade"
+          onRequestClose={() => setConfirmVisible(false)}
+        >
+          <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(0,0,0,0.8)' }}>
+            <View style={{ backgroundColor: '#000000', borderRadius: 16, padding: 24, alignItems: 'center', width: 320, borderWidth: 1, borderColor: '#333333', shadowColor: '#000', shadowOpacity: 0.5, shadowRadius: 20, shadowOffset: { width: 0, height: 10 }, elevation: 20 }}>
+              <Text style={{ fontSize: 18, fontFamily: 'Inter_700Bold', color: '#FFFFFF', marginBottom: 16, textAlign: 'center' }}>
+                {confirmAction === 'cache' ? 'Clear cache?' : 'Clear search history?'}
+              </Text>
+              <Text style={{ fontSize: 14, fontFamily: 'Inter_400Regular', color: '#8B98A5', marginBottom: 24, textAlign: 'center', lineHeight: 20 }}>
+                {confirmAction === 'cache' ? 'This will clear all cached data and may improve performance.' : 'This will permanently delete your search history.'}
+              </Text>
+              <View style={{ flexDirection: 'row', justifyContent: 'center', width: '100%', gap: 12 }}>
+                <TouchableOpacity
+                  style={{ backgroundColor: '#1D9BF0', borderRadius: 20, paddingVertical: 12, paddingHorizontal: 24, flex: 1, alignItems: 'center' }}
+                  onPress={() => {
+                    setConfirmVisible(false);
+                    setTimeout(() => {
+                      setPromptMessage(confirmAction === 'cache' ? 'Cache cleared successfully!' : 'Search history cleared!');
+                      setPromptSuccess(true);
+                      setPromptVisible(true);
+                    }, 200);
+                  }}
+                  activeOpacity={0.8}
+                >
+                  <Text style={{ color: '#FFFFFF', fontFamily: 'Inter_700Bold', fontSize: 15 }}>Clear</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={{ backgroundColor: 'transparent', borderRadius: 20, paddingVertical: 12, paddingHorizontal: 24, flex: 1, alignItems: 'center', borderWidth: 1, borderColor: '#333333' }}
+                  onPress={() => setConfirmVisible(false)}
+                  activeOpacity={0.8}
+                >
+                  <Text style={{ color: '#FFFFFF', fontFamily: 'Inter_700Bold', fontSize: 15 }}>Cancel</Text>
+                </TouchableOpacity>
+              </View>
             </View>
-          </BlurView>
-        </View>
-      </Modal>
+          </View>
+        </Modal>
+
+
+
+      </SafeAreaView>
     </LinearGradient>
   );
 }
@@ -268,4 +315,14 @@ const styles = StyleSheet.create({
     marginLeft: 36,
     fontStyle: 'italic',
   },
+
 }); 
+
+
+
+
+
+
+
+
+

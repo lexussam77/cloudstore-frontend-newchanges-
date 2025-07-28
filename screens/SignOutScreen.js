@@ -1,23 +1,12 @@
 import React, { useContext } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, SafeAreaView, Modal } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import Feather from 'react-native-vector-icons/Feather';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { AuthContext } from './AuthContext';
-import { useTheme } from '../theme/ThemeContext';
-import { LinearGradient } from 'expo-linear-gradient';
-import { BlurView } from 'expo-blur';
 import { useFonts, Inter_400Regular, Inter_700Bold } from '@expo-google-fonts/inter';
-
-const DEEP_BLUE_GRADIENT = ['#0a0f1c', '#12203a', '#1a2a4f'];
-const GLASS_BG_DEEP = 'rgba(20,40,80,0.32)';
-const GLASS_BORDER = 'rgba(255,255,255,0.10)';
-const WHITE = '#fff';
-const LIGHT_TEXT = '#e0e6f0';
-const BLUE_ACCENT = '#2979FF';
 
 export default function SignOutScreen({ navigation }) {
   const { setJwt } = useContext(AuthContext);
-  const { theme } = useTheme();
   let [fontsLoaded] = useFonts({ Inter_400Regular, Inter_700Bold });
   if (!fontsLoaded) return null;
 
@@ -28,21 +17,31 @@ export default function SignOutScreen({ navigation }) {
   };
 
   return (
-    <LinearGradient colors={DEEP_BLUE_GRADIENT} style={{ flex: 1 }}>
+    <View style={{ flex: 1, backgroundColor: '#000000' }}>
       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', padding: 24 }}>
-        <BlurView intensity={90} tint="dark" style={{ backgroundColor: GLASS_BG_DEEP, borderRadius: 28, borderWidth: 1.5, borderColor: GLASS_BORDER, padding: 32, alignItems: 'center', width: '100%', maxWidth: 380, shadowColor: '#000', shadowOpacity: 0.18, shadowRadius: 24, shadowOffset: { width: 0, height: 12 }, elevation: 12 }}>
-          <Feather name="log-out" size={48} color={BLUE_ACCENT} style={{ marginBottom: 18 }} />
-          <Text style={{ fontFamily: 'Inter_700Bold', fontSize: 28, color: WHITE, marginBottom: 12, textAlign: 'center' }}>Sign Out</Text>
-          <Text style={{ fontFamily: 'Inter_400Regular', fontSize: 16, color: LIGHT_TEXT, marginBottom: 32, textAlign: 'center' }}>Are you sure you want to sign out of your CloudStore account?</Text>
-          <TouchableOpacity style={{ backgroundColor: BLUE_ACCENT, borderRadius: 18, paddingVertical: 16, paddingHorizontal: 32, marginBottom: 16, width: '100%', alignItems: 'center', shadowOpacity: 0.10, shadowRadius: 8, shadowOffset: { width: 0, height: 2 }, elevation: 2 }} onPress={handleSignOut} activeOpacity={0.85}>
-            <Text style={{ color: WHITE, fontFamily: 'Inter_700Bold', fontSize: 18 }}>Sign Out</Text>
+        <View style={{ backgroundColor: '#000000', borderRadius: 20, borderWidth: 1, borderColor: '#333333', padding: 32, alignItems: 'center', width: '100%', maxWidth: 380, shadowColor: '#000', shadowOpacity: 0.5, shadowRadius: 20, shadowOffset: { width: 0, height: 10 }, elevation: 20 }}>
+          <View style={{ backgroundColor: '#1D9BF0', borderRadius: 50, padding: 16, marginBottom: 24 }}>
+            <Feather name="log-out" size={32} color="#FFFFFF" />
+          </View>
+          <Text style={{ fontFamily: 'Inter_700Bold', fontSize: 24, color: '#FFFFFF', marginBottom: 8, textAlign: 'center' }}>Sign Out</Text>
+          <Text style={{ fontFamily: 'Inter_400Regular', fontSize: 16, color: '#8B98A5', marginBottom: 32, textAlign: 'center', lineHeight: 22 }}>Are you sure you want to sign out of your CloudStore account?</Text>
+          <TouchableOpacity
+            style={{ backgroundColor: '#1D9BF0', borderRadius: 20, paddingVertical: 14, paddingHorizontal: 32, marginBottom: 12, width: '100%', alignItems: 'center' }}
+            onPress={handleSignOut}
+            activeOpacity={0.8}
+          >
+            <Text style={{ color: '#FFFFFF', fontFamily: 'Inter_700Bold', fontSize: 16 }}>Sign Out</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={{ backgroundColor: 'rgba(41,121,255,0.08)', borderRadius: 18, paddingVertical: 14, paddingHorizontal: 32, alignItems: 'center', width: '100%' }} onPress={() => navigation.goBack()} activeOpacity={0.7}>
-            <Text style={{ color: BLUE_ACCENT, fontFamily: 'Inter_700Bold', fontSize: 16 }}>Cancel</Text>
+          <TouchableOpacity
+            style={{ backgroundColor: 'transparent', borderRadius: 20, paddingVertical: 14, paddingHorizontal: 32, alignItems: 'center', width: '100%', borderWidth: 1, borderColor: '#333333' }}
+            onPress={() => navigation.goBack()}
+            activeOpacity={0.8}
+          >
+            <Text style={{ color: '#FFFFFF', fontFamily: 'Inter_700Bold', fontSize: 16 }}>Cancel</Text>
           </TouchableOpacity>
-        </BlurView>
+        </View>
       </View>
-    </LinearGradient>
+    </View>
   );
 }
 

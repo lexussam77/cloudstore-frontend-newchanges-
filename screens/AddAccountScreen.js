@@ -67,15 +67,7 @@ export default function AddAccountScreen({ navigation }) {
         <View style={styles.modalOverlay}>
           <View style={styles.modalSheet}>
             <Text style={styles.modalTitle}>Create your CloudStore account</Text>
-            <TouchableOpacity style={styles.googleBtn} activeOpacity={0.85}>
-              <Image source={require('../assets/images/Google.png')} style={styles.googleIcon} />
-              <Text style={styles.googleText}>Continue with Google</Text>
-            </TouchableOpacity>
-            <View style={styles.dividerRow}>
-              <View style={styles.divider} />
-              <Text style={styles.orText}>Or</Text>
-              <View style={styles.divider} />
-            </View>
+
             <TextInput
               style={[styles.input, focusedInput === 'name' && styles.inputFocused]}
               placeholder="Full Name"
@@ -252,46 +244,7 @@ const styles = StyleSheet.create({
     color: '#222',
     marginBottom: 18,
   },
-  googleBtn: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#fff',
-    borderRadius: 12,
-    borderWidth: 1,
-    borderColor: '#e0e7ef',
-    paddingVertical: 12,
-    paddingHorizontal: 18,
-    marginBottom: 18,
-    width: '100%',
-    justifyContent: 'center',
-  },
-  googleIcon: {
-    width: 22,
-    height: 22,
-    marginRight: 10,
-    resizeMode: 'contain',
-  },
-  googleText: {
-    fontSize: 16,
-    color: '#222',
-    fontWeight: '500',
-  },
-  dividerRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 18,
-    width: '100%',
-  },
-  divider: {
-    flex: 1,
-    height: 1,
-    backgroundColor: '#e0e7ef',
-  },
-  orText: {
-    marginHorizontal: 10,
-    color: '#888',
-    fontWeight: 'bold',
-  },
+
   continueBtn: {
     backgroundColor: '#2563eb',
     borderRadius: 12,
