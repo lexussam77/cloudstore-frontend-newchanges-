@@ -60,7 +60,7 @@ function SplashScreen() {
 
   return (
     <LinearGradient
-      colors={['#0a0f1c', '#12203a', '#1a2a4f']}
+      colors={['#000000', '#0F0F0F', '#1A1A1A']}
       style={{ flex: 1 }}
     >
       <View style={{
@@ -80,14 +80,14 @@ function SplashScreen() {
         >
           {/* Logo Background with Glow Effect */}
           <BlurView intensity={90} tint="dark" style={{
-            backgroundColor: 'rgba(20,40,80,0.32)',
+            backgroundColor: 'rgba(0,0,0,0.4)',
             borderRadius: 32,
             borderWidth: 1.5,
-            borderColor: 'rgba(255,255,255,0.10)',
+            borderColor: 'rgba(255,255,255,0.15)',
             padding: 32,
             alignItems: 'center',
-            shadowColor: '#1D9BF0',
-            shadowOpacity: 0.3,
+            shadowColor: '#FFFFFF',
+            shadowOpacity: 0.1,
             shadowRadius: 30,
             shadowOffset: { width: 0, height: 0 },
             elevation: 20,
@@ -142,7 +142,7 @@ function SplashScreen() {
               <Animated.View style={{
                 width: '100%',
                 height: '100%',
-                backgroundColor: '#1D9BF0',
+                backgroundColor: '#FFFFFF',
                 borderRadius: 2,
                 transform: [{
                   translateX: fadeAnim.interpolate({

@@ -11,11 +11,11 @@
     "splash": {
       "image": "./assets/cloudstore-logo.png",
       "resizeMode": "contain",
-      "backgroundColor": "#0F0F0F",
+      "backgroundColor": "#000000",
       "dark": {
         "image": "./assets/cloudstore-logo.png",
         "resizeMode": "contain",
-        "backgroundColor": "#0F0F0F"
+        "backgroundColor": "#000000"
       }
     },
     "ios": {

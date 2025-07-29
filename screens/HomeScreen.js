@@ -316,53 +316,7 @@ export default function HomeScreen() {
               elevation: 3,
             }}>
 
-              {/* Files Management */}
-              <TouchableOpacity
-                style={styles.featureListItem}
-                onPress={() => navigation.navigate('Files')}
-                activeOpacity={0.8}
-              >
-                <View style={[styles.featureListIcon, { backgroundColor: '#3b82f6' + '20' }]}>
-                  <Feather name="folder" size={20} color="#3b82f6" />
-                </View>
-                <View style={styles.featureListContent}>
-                  <Text style={styles.featureListTitle}>Files</Text>
-                  <Text style={styles.featureListDescription}>Manage and organize all your files</Text>
-                </View>
-                <Feather name="chevron-right" size={16} color={constants.secondaryText} />
-              </TouchableOpacity>
 
-              {/* Compression */}
-              <TouchableOpacity
-                style={styles.featureListItem}
-                onPress={() => navigation.navigate('Compression')}
-                activeOpacity={0.8}
-              >
-                <View style={[styles.featureListIcon, { backgroundColor: '#10b981' + '20' }]}>
-                  <Feather name="archive" size={20} color="#10b981" />
-                </View>
-                <View style={styles.featureListContent}>
-                  <Text style={styles.featureListTitle}>Compress</Text>
-                  <Text style={styles.featureListDescription}>Reduce file sizes and save space</Text>
-                </View>
-                <Feather name="chevron-right" size={16} color={constants.secondaryText} />
-              </TouchableOpacity>
-
-              {/* Photos */}
-              <TouchableOpacity
-                style={styles.featureListItem}
-                onPress={() => navigation.navigate('Photos')}
-                activeOpacity={0.8}
-              >
-                <View style={[styles.featureListIcon, { backgroundColor: '#f59e0b' + '20' }]}>
-                  <Feather name="image" size={20} color="#f59e0b" />
-                </View>
-                <View style={styles.featureListContent}>
-                  <Text style={styles.featureListTitle}>Photos</Text>
-                  <Text style={styles.featureListDescription}>View and manage your photos</Text>
-                </View>
-                <Feather name="chevron-right" size={16} color={constants.secondaryText} />
-              </TouchableOpacity>
 
               {/* Document Scanner */}
               <TouchableOpacity
