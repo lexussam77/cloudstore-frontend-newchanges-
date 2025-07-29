@@ -73,46 +73,46 @@ export default function FileItem({ item, onMenuPress, onPress, onStarPress, hide
       <TouchableOpacity
         style={{
           backgroundColor: constants.glassBg,
-          borderRadius: 18,
+          borderRadius: 16,
           borderWidth: 1,
           borderColor: constants.glassBorder,
-          paddingVertical: 16,
-          paddingHorizontal: 20,
-          marginHorizontal: 16,
-          marginVertical: 4,
+          paddingVertical: 14,
+          paddingHorizontal: 16,
+          marginHorizontal: 12,
+          marginVertical: 3,
           flexDirection: 'row',
           alignItems: 'center',
           shadowColor: '#000',
-          shadowOpacity: 0.08,
-          shadowRadius: 12,
-          shadowOffset: { width: 0, height: 4 },
-          elevation: 3,
+          shadowOpacity: 0.06,
+          shadowRadius: 8,
+          shadowOffset: { width: 0, height: 2 },
+          elevation: 2,
         }}
         onPress={onPress}
         activeOpacity={0.8}
       >
         {/* File Icon */}
         <View style={{
-          width: 48,
-          height: 48,
-          borderRadius: 14,
+          width: 44,
+          height: 44,
+          borderRadius: 12,
           backgroundColor: iconStyle.bg,
           alignItems: 'center',
           justifyContent: 'center',
-          marginRight: 16,
+          marginRight: 14,
           borderWidth: 1,
           borderColor: iconStyle.color + '30'
         }}>
           {isImage && item.url ? (
-            <Image source={{ uri: item.url }} style={{ width: 48, height: 48, borderRadius: 14, resizeMode: 'cover' }} />
+            <Image source={{ uri: item.url }} style={{ width: 44, height: 44, borderRadius: 12, resizeMode: 'cover' }} />
           ) : (
-            <Feather name={getFileIcon(item.name)} size={24} color={iconStyle.color} />
+            <Feather name={getFileIcon(item.name)} size={22} color={iconStyle.color} />
           )}
         </View>
 
         {/* File Info */}
-        <View style={{ flex: 1, justifyContent: 'center', paddingRight: 12 }}>
-          <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 4 }}>
+        <View style={{ flex: 1, justifyContent: 'center', paddingRight: 10 }}>
+          <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 3 }}>
             <Text
               style={{
                 fontFamily: 'Inter_700Bold',

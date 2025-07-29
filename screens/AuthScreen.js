@@ -8,7 +8,6 @@ import CustomPrompt from './CustomPrompt';
 import { AuthContext } from './AuthContext';
 import { useTheme } from '../theme/ThemeContext';
 import { LinearGradient } from 'expo-linear-gradient';
-import { BlurView } from 'expo-blur';
 import { useFonts, Inter_400Regular, Inter_700Bold } from '@expo-google-fonts/inter';
 
 export default function AuthScreen({ navigation }) {
@@ -27,6 +26,8 @@ export default function AuthScreen({ navigation }) {
   const flipAnim = useRef(new Animated.Value(0)).current;
   const [flipped, setFlipped] = useState(false);
   const [focusedInput, setFocusedInput] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const { setJwt } = useContext(AuthContext);
   const cardAnim = useRef(new Animated.Value(0)).current;
   const logoAnim = useRef(new Animated.Value(0)).current;
@@ -170,27 +171,26 @@ export default function AuthScreen({ navigation }) {
 
   return (
     <LinearGradient colors={constants.gradient} style={{ flex: 1 }}>
-      <SafeAreaView style={{ flex: 1, justifyContent: 'center', alignItems: 'center', padding: 24 }}>
+      <SafeAreaView style={{ flex: 1, justifyContent: 'center', alignItems: 'center', paddingHorizontal: 24, paddingVertical: 24, marginTop: -380 }}>
         {/* Logo */}
         <Animated.View
-          style={{ marginBottom: 18, alignItems: 'center', transform: [{ translateY: logoAnim.interpolate({ inputRange: [0, 1], outputRange: [0, -60] }) }] }}
+          style={{ marginBottom: 40, alignItems: 'center', transform: [{ translateY: logoAnim.interpolate({ inputRange: [0, 1], outputRange: [0, -20] }) }] }}
         >
-          <AntDesign name="cloud" size={38} color={constants.accent} style={{ marginBottom: 2 }} />
+          <AntDesign name="cloud" size={38} color={constants.accent} style={{ marginBottom: 6 }} />
           <Text style={{ fontFamily: 'Inter_700Bold', fontSize: 28, color: constants.primaryText, letterSpacing: 0.2 }}>CloudStore</Text>
         </Animated.View>
-        {/* Glassy Flip Card */}
-        <Animated.View style={{ width: '100%', maxWidth: 380, opacity: cardAnim, transform: [{ translateY: cardAnim.interpolate({ inputRange: [0, 1], outputRange: [30, 0] }) }] }}>
-          <BlurView intensity={90} tint="dark" style={{ backgroundColor: constants.glassBg, borderRadius: 32, borderWidth: 1.5, borderColor: constants.glassBorder, padding: 32, alignItems: 'center', width: '100%', shadowColor: '#000', shadowOpacity: 0.18, shadowRadius: 24, shadowOffset: { width: 0, height: 12 }, elevation: 12, overflow: 'hidden' }}>
-            <View style={{ height: isLogin ? 340 : 480, width: '100%', alignItems: 'center', justifyContent: isLogin ? 'center' : 'flex-start', marginTop: isLogin ? 10 : 0, paddingTop: !isLogin ? 14 : 0, paddingBottom: !isLogin ? 8 : 0 }}>
+        {/* Auth Forms */}
+        <Animated.View style={{ width: '100%', maxWidth: 400, opacity: cardAnim, transform: [{ translateY: cardAnim.interpolate({ inputRange: [0, 1], outputRange: [30, 0] }) }] }}>
+          <View style={{ width: '100%', alignItems: 'center' }}>
             <Animated.View
                 style={[{ position: 'absolute', width: '100%', backfaceVisibility: 'hidden', transform: [{ rotateY: frontInterpolate }] }]}
               pointerEvents={isLogin ? 'auto' : 'none'}
             >
             {isLogin && (
                   <View style={{ width: '100%' }}>
-                    <Text style={{ fontFamily: 'Inter_700Bold', fontSize: 22, color: constants.primaryText, marginBottom: 18, textAlign: 'center' }}>Log In</Text>
+                    <Text style={{ fontFamily: 'Inter_700Bold', fontSize: 24, color: constants.primaryText, marginBottom: 24, textAlign: 'center' }}>Log In</Text>
                 <TextInput
-                      style={{ width: '100%', borderRadius: 14, padding: 16, fontSize: 16, marginBottom: 16, borderWidth: 1.5, fontFamily: 'Inter_400Regular', backgroundColor: 'rgba(255,255,255,0.08)', color: constants.primaryText, borderColor: constants.glassBorder }}
+                      style={{ width: '100%', borderRadius: 16, padding: 18, fontSize: 16, marginBottom: 16, borderWidth: 2, fontFamily: 'Inter_400Regular', backgroundColor: 'rgba(255,255,255,0.08)', color: constants.primaryText, borderColor: focusedInput === 'identifier' ? constants.accent : constants.glassBorder }}
                   placeholder="Email or Username"
                   value={email}
                   onChangeText={setEmail}
@@ -198,21 +198,29 @@ export default function AuthScreen({ navigation }) {
                   onFocus={() => setFocusedInput('identifier')}
                   onBlur={() => setFocusedInput('')}
                 />
-                <TextInput
-                      style={{ width: '100%', borderRadius: 14, padding: 16, fontSize: 16, marginBottom: 16, borderWidth: 1.5, fontFamily: 'Inter_400Regular', backgroundColor: 'rgba(255,255,255,0.08)', color: constants.primaryText, borderColor: constants.glassBorder }}
-                  placeholder="Password"
-                  value={password}
-                  onChangeText={setPassword}
-                  secureTextEntry
-                      placeholderTextColor={constants.primaryText + '99'}
-                  onFocus={() => setFocusedInput('password')}
-                  onBlur={() => setFocusedInput('')}
-                />
-                    <TouchableOpacity style={{ backgroundColor: constants.accent, borderRadius: 18, paddingVertical: 16, alignItems: 'center', width: '100%', marginBottom: 10, shadowOpacity: 0.10, shadowRadius: 8, shadowOffset: { width: 0, height: 2 }, elevation: 2 }} activeOpacity={0.85} onPress={handleSubmit} disabled={loading}>
-                      {loading ? <ActivityIndicator color={constants.primaryText} /> : <Text style={{ color: constants.primaryText, fontFamily: 'Inter_700Bold', fontSize: 17, textAlign: 'center' }}>Log in</Text>}
+                <View style={{ position: 'relative', marginBottom: 16 }}>
+                  <TextInput
+                        style={{ width: '100%', borderRadius: 16, padding: 18, paddingRight: 60, fontSize: 16, borderWidth: 2, fontFamily: 'Inter_400Regular', backgroundColor: 'rgba(255,255,255,0.08)', color: constants.primaryText, borderColor: focusedInput === 'password' ? constants.accent : constants.glassBorder }}
+                    placeholder="Password"
+                    value={password}
+                    onChangeText={setPassword}
+                    secureTextEntry={!showPassword}
+                        placeholderTextColor={constants.primaryText + '99'}
+                    onFocus={() => setFocusedInput('password')}
+                    onBlur={() => setFocusedInput('')}
+                  />
+                  <TouchableOpacity
+                    style={{ position: 'absolute', right: 18, top: 18, padding: 4 }}
+                    onPress={() => setShowPassword(!showPassword)}
+                  >
+                    <Feather name={showPassword ? 'eye-off' : 'eye'} size={20} color={constants.primaryText + '99'} />
+                  </TouchableOpacity>
+                </View>
+                    <TouchableOpacity style={{ backgroundColor: constants.accent, borderRadius: 20, paddingVertical: 18, alignItems: 'center', width: '100%', marginBottom: 16, shadowOpacity: 0.10, shadowRadius: 8, shadowOffset: { width: 0, height: 2 }, elevation: 2 }} activeOpacity={0.85} onPress={handleSubmit} disabled={loading}>
+                      {loading ? <ActivityIndicator color={constants.primaryText} /> : <Text style={{ color: constants.primaryText, fontFamily: 'Inter_700Bold', fontSize: 18, textAlign: 'center' }}>Log in</Text>}
                 </TouchableOpacity>
-                    <TouchableOpacity onPress={flipCard} style={{ marginTop: 8 }}>
-                      <Text style={{ color: constants.primaryText, fontFamily: 'Inter_400Regular', fontSize: 15, textAlign: 'center' }}>Don't have an account? <Text style={{ color: constants.accent, fontFamily: 'Inter_700Bold' }}>Sign up</Text></Text>
+                    <TouchableOpacity onPress={flipCard} style={{ marginTop: 12 }}>
+                      <Text style={{ color: constants.primaryText, fontFamily: 'Inter_400Regular', fontSize: 16, textAlign: 'center' }}>Don't have an account? <Text style={{ color: constants.accent, fontFamily: 'Inter_700Bold' }}>Sign up</Text></Text>
                 </TouchableOpacity>
               </View>
             )}
@@ -223,9 +231,9 @@ export default function AuthScreen({ navigation }) {
             >
             {!isLogin && (
                   <View style={{ width: '100%' }}>
-                    <Text style={{ fontFamily: 'Inter_700Bold', fontSize: 22, color: constants.primaryText, marginTop: 0, marginBottom: 6, textAlign: 'center' }}>Sign Up</Text>
+                {/* <Text style={{ fontFamily: 'Inter_700Bold', fontSize: 24, color: constants.primaryText, marginBottom: 20, textAlign: 'center' }}>Create Account</Text> */}
                 <TextInput
-                      style={{ width: '100%', borderRadius: 14, padding: 16, fontSize: 16, marginBottom: 16, borderWidth: 1.5, fontFamily: 'Inter_400Regular', backgroundColor: 'rgba(255,255,255,0.08)', color: constants.primaryText, borderColor: constants.glassBorder }}
+                      style={{ width: '100%', borderRadius: 16, padding: 18, fontSize: 16, marginBottom: 16, borderWidth: 2, fontFamily: 'Inter_400Regular', backgroundColor: 'rgba(255,255,255,0.08)', color: constants.primaryText, borderColor: focusedInput === 'name' ? constants.accent : constants.glassBorder }}
                   placeholder="Full name"
                   value={name}
                   onChangeText={setName}
@@ -234,7 +242,7 @@ export default function AuthScreen({ navigation }) {
                   onBlur={() => setFocusedInput('')}
                 />
                 <TextInput
-                      style={{ width: '100%', borderRadius: 14, padding: 16, fontSize: 16, marginBottom: 16, borderWidth: 1.5, fontFamily: 'Inter_400Regular', backgroundColor: 'rgba(255,255,255,0.08)', color: constants.primaryText, borderColor: constants.glassBorder }}
+                      style={{ width: '100%', borderRadius: 16, padding: 18, fontSize: 16, marginBottom: 16, borderWidth: 2, fontFamily: 'Inter_400Regular', backgroundColor: 'rgba(255,255,255,0.08)', color: constants.primaryText, borderColor: focusedInput === 'email' ? constants.accent : constants.glassBorder }}
                   placeholder="Email address"
                   value={email}
                   onChangeText={setEmail}
@@ -242,37 +250,52 @@ export default function AuthScreen({ navigation }) {
                   onFocus={() => setFocusedInput('email')}
                   onBlur={() => setFocusedInput('')}
                 />
-                <TextInput
-                      style={{ width: '100%', borderRadius: 14, padding: 16, fontSize: 16, marginBottom: 16, borderWidth: 1.5, fontFamily: 'Inter_400Regular', backgroundColor: 'rgba(255,255,255,0.08)', color: constants.primaryText, borderColor: constants.glassBorder }}
-                  placeholder="Password"
-                  value={password}
-                  onChangeText={setPassword}
-                  secureTextEntry
-                      placeholderTextColor={constants.primaryText + '99'}
-                  onFocus={() => setFocusedInput('password')}
-                  onBlur={() => setFocusedInput('')}
-                />
-                <TextInput
-                      style={{ width: '100%', borderRadius: 14, padding: 16, fontSize: 16, marginBottom: 16, borderWidth: 1.5, fontFamily: 'Inter_400Regular', backgroundColor: 'rgba(255,255,255,0.08)', color: constants.primaryText, borderColor: constants.glassBorder }}
-                      placeholder="Confirm password"
-                  value={confirmPassword}
-                  onChangeText={setConfirmPassword}
-                  secureTextEntry
-                      placeholderTextColor={constants.primaryText + '99'}
-                  onFocus={() => setFocusedInput('confirmPassword')}
-                  onBlur={() => setFocusedInput('')}
-                />
-                    <TouchableOpacity style={{ backgroundColor: constants.accent, borderRadius: 18, paddingVertical: 16, alignItems: 'center', width: '100%', marginBottom: 10, shadowOpacity: 0.10, shadowRadius: 8, shadowOffset: { width: 0, height: 2 }, elevation: 2 }} activeOpacity={0.85} onPress={handleSubmit} disabled={loading}>
-                      {loading ? <ActivityIndicator color={constants.primaryText} /> : <Text style={{ color: constants.primaryText, fontFamily: 'Inter_700Bold', fontSize: 17, textAlign: 'center' }}>Sign up</Text>}
+                <View style={{ position: 'relative', marginBottom: 16 }}>
+                  <TextInput
+                        style={{ width: '100%', borderRadius: 16, padding: 20, paddingRight: 60, fontSize: 18, borderWidth: 2, fontFamily: 'Inter_400Regular', backgroundColor: 'rgba(255,255,255,0.08)', color: constants.primaryText, borderColor: focusedInput === 'password' ? constants.accent : constants.glassBorder }}
+                    placeholder="Password"
+                    value={password}
+                    onChangeText={setPassword}
+                    secureTextEntry={!showPassword}
+                        placeholderTextColor={constants.primaryText + '99'}
+                    onFocus={() => setFocusedInput('password')}
+                    onBlur={() => setFocusedInput('')}
+                  />
+                  <TouchableOpacity
+                    style={{ position: 'absolute', right: 20, top: 20, padding: 4 }}
+                    onPress={() => setShowPassword(!showPassword)}
+                  >
+                    <Feather name={showPassword ? 'eye-off' : 'eye'} size={20} color={constants.primaryText + '99'} />
+                  </TouchableOpacity>
+                </View>
+                <View style={{ position: 'relative', marginBottom: 20 }}>
+                  <TextInput
+                        style={{ width: '100%', borderRadius: 16, padding: 20, paddingRight: 60, fontSize: 18, borderWidth: 2, fontFamily: 'Inter_400Regular', backgroundColor: 'rgba(255,255,255,0.08)', color: constants.primaryText, borderColor: focusedInput === 'confirmPassword' ? constants.accent : constants.glassBorder }}
+                        placeholder="Confirm password"
+                    value={confirmPassword}
+                    onChangeText={setConfirmPassword}
+                    secureTextEntry={!showConfirmPassword}
+                        placeholderTextColor={constants.primaryText + '99'}
+                    onFocus={() => setFocusedInput('confirmPassword')}
+                    onBlur={() => setFocusedInput('')}
+                  />
+                  <TouchableOpacity
+                    style={{ position: 'absolute', right: 20, top: 20, padding: 4 }}
+                    onPress={() => setShowConfirmPassword(!showConfirmPassword)}
+                  >
+                    <Feather name={showConfirmPassword ? 'eye-off' : 'eye'} size={20} color={constants.primaryText + '99'} />
+                  </TouchableOpacity>
+                </View>
+                    <TouchableOpacity style={{ backgroundColor: constants.accent, borderRadius: 20, paddingVertical: 18, alignItems: 'center', width: '100%', marginBottom: 16, shadowOpacity: 0.10, shadowRadius: 8, shadowOffset: { width: 0, height: 2 }, elevation: 2 }} activeOpacity={0.85} onPress={handleSubmit} disabled={loading}>
+                      {loading ? <ActivityIndicator color={constants.primaryText} /> : <Text style={{ color: constants.primaryText, fontFamily: 'Inter_700Bold', fontSize: 18, textAlign: 'center' }}>Sign up</Text>}
                 </TouchableOpacity>
-                    <TouchableOpacity onPress={flipCard} style={{ marginTop: 8 }}>
-                      <Text style={{ color: constants.primaryText, fontFamily: 'Inter_400Regular', fontSize: 15, textAlign: 'center' }}>Already have an account? <Text style={{ color: constants.accent, fontFamily: 'Inter_700Bold' }}>Log in</Text></Text>
+                    <TouchableOpacity onPress={flipCard} style={{ marginTop: 12 }}>
+                      <Text style={{ color: constants.primaryText, fontFamily: 'Inter_400Regular', fontSize: 16, textAlign: 'center' }}>Already have an account? <Text style={{ color: constants.accent, fontFamily: 'Inter_700Bold' }}>Log in</Text></Text>
                 </TouchableOpacity>
               </View>
             )}
           </Animated.View>
         </View>
-          </BlurView>
         </Animated.View>
         {/* Prompt Modal */}
       <CustomPrompt

@@ -10,11 +10,19 @@ export function AuthProvider({ children }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // On mount, check for JWT in AsyncStorage
+    // On mount, check for JWT in AsyncStorage with minimum splash duration
     const checkToken = async () => {
+      const startTime = Date.now();
       const token = await AsyncStorage.getItem('jwt');
       setJwt(token);
-      setLoading(false);
+
+      // Ensure splash screen shows for at least 5 seconds
+      const elapsedTime = Date.now() - startTime;
+      const remainingTime = Math.max(0, 5000 - elapsedTime);
+
+      setTimeout(() => {
+        setLoading(false);
+      }, remainingTime);
     };
     checkToken();
   }, []);

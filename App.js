@@ -1,9 +1,11 @@
-import React, { useContext } from 'react';
+import React, { useContext, useRef, useEffect } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import BottomTabNavigation from './screens/BottomTabNavigation';
-import { Image, View } from 'react-native';
+import { Image, View, Text, Animated, Dimensions } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { LinearGradient } from 'expo-linear-gradient';
+import { BlurView } from 'expo-blur';
 
 import SettingsScreen from './screens/SettingsScreen';
 import HelpScreen from './screens/HelpScreen';
@@ -35,23 +37,143 @@ import { PremiumProvider } from './screens/PremiumContext';
 const Stack = createNativeStackNavigator();
 
 function SplashScreen() {
+  const fadeAnim = useRef(new Animated.Value(0)).current;
+  const scaleAnim = useRef(new Animated.Value(0.8)).current;
+  const { width, height } = Dimensions.get('window');
+
+  useEffect(() => {
+    // Start animations
+    Animated.parallel([
+      Animated.timing(fadeAnim, {
+        toValue: 1,
+        duration: 1000,
+        useNativeDriver: true,
+      }),
+      Animated.spring(scaleAnim, {
+        toValue: 1,
+        friction: 8,
+        tension: 100,
+        useNativeDriver: true,
+      }),
+    ]).start();
+  }, []);
+
   return (
-    <View style={{ 
-      flex: 1, 
-      justifyContent: 'center', 
-      alignItems: 'center', 
-      backgroundColor: '#0F0F0F' 
-    }}>
-      <Image 
-        source={require('./assets/cloudstore-logo.png')} 
-        style={{ 
-          width: 200, 
-          height: 200, 
-          resizeMode: 'contain',
-          borderRadius: 20
-        }}
-      />
-    </View>
+    <LinearGradient
+      colors={['#0a0f1c', '#12203a', '#1a2a4f']}
+      style={{ flex: 1 }}
+    >
+      <View style={{
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        paddingHorizontal: 24
+      }}>
+
+        {/* Animated Logo Container */}
+        <Animated.View
+          style={{
+            opacity: fadeAnim,
+            transform: [{ scale: scaleAnim }],
+            alignItems: 'center',
+          }}
+        >
+          {/* Logo Background with Glow Effect */}
+          <BlurView intensity={90} tint="dark" style={{
+            backgroundColor: 'rgba(20,40,80,0.32)',
+            borderRadius: 32,
+            borderWidth: 1.5,
+            borderColor: 'rgba(255,255,255,0.10)',
+            padding: 32,
+            alignItems: 'center',
+            shadowColor: '#1D9BF0',
+            shadowOpacity: 0.3,
+            shadowRadius: 30,
+            shadowOffset: { width: 0, height: 0 },
+            elevation: 20,
+          }}>
+            <Image
+              source={require('./assets/cloudstore-logo.png')}
+              style={{
+                width: 120,
+                height: 120,
+                resizeMode: 'contain',
+                borderRadius: 16
+              }}
+            />
+          </BlurView>
+
+          {/* App Name */}
+          <Text style={{
+            fontFamily: 'Inter_700Bold',
+            fontSize: 28,
+            color: '#FFFFFF',
+            marginTop: 24,
+            letterSpacing: 1,
+            textAlign: 'center',
+          }}>
+            CloudStore
+          </Text>
+
+          {/* Tagline */}
+          <Text style={{
+            fontFamily: 'Inter_400Regular',
+            fontSize: 16,
+            color: 'rgba(255,255,255,0.7)',
+            marginTop: 8,
+            textAlign: 'center',
+            letterSpacing: 0.5,
+          }}>
+            Your files, everywhere
+          </Text>
+
+          {/* Loading Indicator */}
+          <View style={{
+            marginTop: 40,
+            alignItems: 'center',
+          }}>
+            <View style={{
+              width: 40,
+              height: 4,
+              backgroundColor: 'rgba(255,255,255,0.2)',
+              borderRadius: 2,
+              overflow: 'hidden',
+            }}>
+              <Animated.View style={{
+                width: '100%',
+                height: '100%',
+                backgroundColor: '#1D9BF0',
+                borderRadius: 2,
+                transform: [{
+                  translateX: fadeAnim.interpolate({
+                    inputRange: [0, 1],
+                    outputRange: [-40, 0],
+                  })
+                }]
+              }} />
+            </View>
+          </View>
+
+        </Animated.View>
+
+        {/* Footer */}
+        <View style={{
+          position: 'absolute',
+          bottom: 50,
+          alignItems: 'center',
+        }}>
+          <Text style={{
+            fontFamily: 'Inter_400Regular',
+            fontSize: 12,
+            color: 'rgba(255,255,255,0.5)',
+            textAlign: 'center',
+          }}>
+            Powered by CloudStore Technology
+          </Text>
+        </View>
+
+      </View>
+    </LinearGradient>
   );
 }
 

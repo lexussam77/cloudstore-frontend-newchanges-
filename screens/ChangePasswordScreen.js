@@ -19,6 +19,9 @@ export default function ChangePasswordScreen({ navigation }) {
   const [focusedInput, setFocusedInput] = useState('');
   const [loading, setLoading] = useState(false);
   const [initialLoading, setInitialLoading] = useState(true);
+  const [showCurrentPassword, setShowCurrentPassword] = useState(false);
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const fadeAnim = useRef(new Animated.Value(0)).current;
 

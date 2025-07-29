@@ -282,7 +282,7 @@ export default function HomeScreen() {
               )}
             </BlurView>
           )}
-          
+
           {/* Recent Files Section - Only show this section */}
           {recentFiles.length > 0 && (
             <View style={{ marginHorizontal: 12, marginBottom: 18 }}>
@@ -298,7 +298,155 @@ export default function HomeScreen() {
               ))}
             </View>
           )}
-          
+
+          {/* Features Section */}
+          <View style={{ marginHorizontal: 12, marginBottom: 24 }}>
+            <Text style={{ fontFamily: 'Inter_700Bold', fontSize: 20, color: '#fff', letterSpacing: 0.2, marginLeft: 8, marginBottom: 16 }}>Quick Actions</Text>
+
+            <BlurView intensity={90} tint="dark" style={{
+              backgroundColor: constants.glassBg,
+              borderRadius: 18,
+              borderWidth: 1,
+              borderColor: constants.glassBorder,
+              overflow: 'hidden',
+              shadowColor: '#000',
+              shadowOpacity: 0.08,
+              shadowRadius: 12,
+              shadowOffset: { width: 0, height: 4 },
+              elevation: 3,
+            }}>
+
+              {/* Files Management */}
+              <TouchableOpacity
+                style={styles.featureListItem}
+                onPress={() => navigation.navigate('Files')}
+                activeOpacity={0.8}
+              >
+                <View style={[styles.featureListIcon, { backgroundColor: '#3b82f6' + '20' }]}>
+                  <Feather name="folder" size={20} color="#3b82f6" />
+                </View>
+                <View style={styles.featureListContent}>
+                  <Text style={styles.featureListTitle}>Files</Text>
+                  <Text style={styles.featureListDescription}>Manage and organize all your files</Text>
+                </View>
+                <Feather name="chevron-right" size={16} color={constants.secondaryText} />
+              </TouchableOpacity>
+
+              {/* Compression */}
+              <TouchableOpacity
+                style={styles.featureListItem}
+                onPress={() => navigation.navigate('Compression')}
+                activeOpacity={0.8}
+              >
+                <View style={[styles.featureListIcon, { backgroundColor: '#10b981' + '20' }]}>
+                  <Feather name="archive" size={20} color="#10b981" />
+                </View>
+                <View style={styles.featureListContent}>
+                  <Text style={styles.featureListTitle}>Compress</Text>
+                  <Text style={styles.featureListDescription}>Reduce file sizes and save space</Text>
+                </View>
+                <Feather name="chevron-right" size={16} color={constants.secondaryText} />
+              </TouchableOpacity>
+
+              {/* Photos */}
+              <TouchableOpacity
+                style={styles.featureListItem}
+                onPress={() => navigation.navigate('Photos')}
+                activeOpacity={0.8}
+              >
+                <View style={[styles.featureListIcon, { backgroundColor: '#f59e0b' + '20' }]}>
+                  <Feather name="image" size={20} color="#f59e0b" />
+                </View>
+                <View style={styles.featureListContent}>
+                  <Text style={styles.featureListTitle}>Photos</Text>
+                  <Text style={styles.featureListDescription}>View and manage your photos</Text>
+                </View>
+                <Feather name="chevron-right" size={16} color={constants.secondaryText} />
+              </TouchableOpacity>
+
+              {/* Document Scanner */}
+              <TouchableOpacity
+                style={styles.featureListItem}
+                onPress={() => navigation.navigate('DocumentScanner')}
+                activeOpacity={0.8}
+              >
+                <View style={[styles.featureListIcon, { backgroundColor: '#8b5cf6' + '20' }]}>
+                  <Feather name="camera" size={20} color="#8b5cf6" />
+                </View>
+                <View style={styles.featureListContent}>
+                  <Text style={styles.featureListTitle}>Scanner</Text>
+                  <Text style={styles.featureListDescription}>Scan documents with camera</Text>
+                </View>
+                <Feather name="chevron-right" size={16} color={constants.secondaryText} />
+              </TouchableOpacity>
+
+              {/* Settings */}
+              <TouchableOpacity
+                style={styles.featureListItem}
+                onPress={() => navigation.navigate('Settings')}
+                activeOpacity={0.8}
+              >
+                <View style={[styles.featureListIcon, { backgroundColor: '#ef4444' + '20' }]}>
+                  <Feather name="settings" size={20} color="#ef4444" />
+                </View>
+                <View style={styles.featureListContent}>
+                  <Text style={styles.featureListTitle}>Settings</Text>
+                  <Text style={styles.featureListDescription}>Customize app preferences</Text>
+                </View>
+                <Feather name="chevron-right" size={16} color={constants.secondaryText} />
+              </TouchableOpacity>
+
+              {/* Account */}
+              <TouchableOpacity
+                style={styles.featureListItem}
+                onPress={() => navigation.navigate('Account')}
+                activeOpacity={0.8}
+              >
+                <View style={[styles.featureListIcon, { backgroundColor: '#06b6d4' + '20' }]}>
+                  <Feather name="user" size={20} color="#06b6d4" />
+                </View>
+                <View style={styles.featureListContent}>
+                  <Text style={styles.featureListTitle}>Account</Text>
+                  <Text style={styles.featureListDescription}>Manage your profile</Text>
+                </View>
+                <Feather name="chevron-right" size={16} color={constants.secondaryText} />
+              </TouchableOpacity>
+
+              {/* Premium */}
+              <TouchableOpacity
+                style={styles.featureListItem}
+                onPress={() => navigation.navigate('ManagePlan')}
+                activeOpacity={0.8}
+              >
+                <View style={[styles.featureListIcon, { backgroundColor: '#f97316' + '20' }]}>
+                  <Feather name="star" size={20} color="#f97316" />
+                </View>
+                <View style={styles.featureListContent}>
+                  <Text style={styles.featureListTitle}>Premium</Text>
+                  <Text style={styles.featureListDescription}>Upgrade for more features</Text>
+                </View>
+                <Feather name="chevron-right" size={16} color={constants.secondaryText} />
+              </TouchableOpacity>
+
+              {/* Help & Support */}
+              <TouchableOpacity
+                style={[styles.featureListItem, { borderBottomWidth: 0 }]}
+                onPress={() => navigation.navigate('Help')}
+                activeOpacity={0.8}
+              >
+                <View style={[styles.featureListIcon, { backgroundColor: '#ec4899' + '20' }]}>
+                  <Feather name="help-circle" size={20} color="#ec4899" />
+                </View>
+                <View style={styles.featureListContent}>
+                  <Text style={styles.featureListTitle}>Help</Text>
+                  <Text style={styles.featureListDescription}>Get support and find answers</Text>
+                </View>
+                <Feather name="chevron-right" size={16} color={constants.secondaryText} />
+              </TouchableOpacity>
+
+            </BlurView>
+          </View>
+
           {/* Folders Grid */}
           {folders.length > 0 && (
             <View style={styles.foldersGrid}>
@@ -1009,6 +1157,73 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     textAlign: 'center',
     paddingHorizontal: 1,
+  },
+  featureCard: {
+    width: 160,
+    marginHorizontal: 8,
+    borderRadius: 20,
+    overflow: 'hidden',
+  },
+  featureCardBlur: {
+    backgroundColor: 'rgba(20,40,80,0.32)',
+    borderWidth: 1.5,
+    borderColor: 'rgba(255,255,255,0.10)',
+    borderRadius: 20,
+    padding: 20,
+    alignItems: 'center',
+    minHeight: 140,
+    justifyContent: 'center',
+  },
+  featureIconContainer: {
+    borderRadius: 16,
+    padding: 12,
+    marginBottom: 12,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  featureTitle: {
+    fontFamily: 'Inter_700Bold',
+    fontSize: 16,
+    color: '#fff',
+    marginBottom: 6,
+    textAlign: 'center',
+  },
+  featureDescription: {
+    fontFamily: 'Inter_400Regular',
+    fontSize: 12,
+    color: 'rgba(255,255,255,0.7)',
+    textAlign: 'center',
+    lineHeight: 16,
+  },
+  featureListItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 16,
+    paddingVertical: 14,
+    borderBottomWidth: 0.5,
+    borderBottomColor: 'rgba(255,255,255,0.1)',
+  },
+  featureListIcon: {
+    width: 36,
+    height: 36,
+    borderRadius: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: 12,
+  },
+  featureListContent: {
+    flex: 1,
+  },
+  featureListTitle: {
+    fontFamily: 'Inter_700Bold',
+    fontSize: 16,
+    color: '#fff',
+    marginBottom: 2,
+  },
+  featureListDescription: {
+    fontFamily: 'Inter_400Regular',
+    fontSize: 13,
+    color: 'rgba(255,255,255,0.7)',
   },
   glassySearchBarWrap: {
     flexDirection: 'row',

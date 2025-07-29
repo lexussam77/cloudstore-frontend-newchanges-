@@ -9,7 +9,7 @@ import { BlurView } from 'expo-blur';
 import { useFonts, Inter_400Regular, Inter_700Bold } from '@expo-google-fonts/inter';
 
 export default function EmailVerificationScreen({ navigation, route }) {
-  const { theme } = useTheme();
+  const { theme, constants } = useTheme();
   const [code, setCode] = useState(['', '', '', '', '', '']);
   const [email, setEmail] = useState(route?.params?.email || '');
   const inputs = [useRef(), useRef(), useRef(), useRef(), useRef(), useRef()];
@@ -99,11 +99,11 @@ export default function EmailVerificationScreen({ navigation, route }) {
   if (!fontsLoaded) return null;
 
   return (
-    <LinearGradient colors={['#0a0f1c', '#12203a', '#1a2a4f']} style={{ flex: 1 }}>
+    <LinearGradient colors={constants.gradient} style={{ flex: 1 }}>
       <SafeAreaView style={{ flex: 1, justifyContent: 'center', alignItems: 'center', padding: 12 }}>
-        <BlurView intensity={90} tint="dark" style={{ backgroundColor: 'rgba(20,40,80,0.32)', borderRadius: 28, borderWidth: 1.5, borderColor: 'rgba(255,255,255,0.10)', padding: 32, alignItems: 'center', width: '100%', maxWidth: 380, shadowColor: '#000', shadowOpacity: 0.18, shadowRadius: 24, shadowOffset: { width: 0, height: 12 }, elevation: 12 }}>
-          <Text style={{ fontFamily: 'Inter_700Bold', fontSize: 24, color: theme.primary, marginBottom: 10, textAlign: 'center', letterSpacing: 0.1 }}>Verify your CloudStore email</Text>
-          <Text style={{ fontFamily: 'Inter_400Regular', fontSize: 16, color: theme.textSecondary, marginBottom: 18, textAlign: 'center', letterSpacing: 0.1 }}>Enter the 6-digit verification code sent to your email address.</Text>
+        <BlurView intensity={90} tint="dark" style={{ backgroundColor: constants.glassBg, borderRadius: 28, borderWidth: 1.5, borderColor: constants.glassBorder, padding: 32, alignItems: 'center', width: '100%', maxWidth: 380, shadowColor: '#000', shadowOpacity: 0.18, shadowRadius: 24, shadowOffset: { width: 0, height: 12 }, elevation: 12 }}>
+          <Text style={{ fontFamily: 'Inter_700Bold', fontSize: 24, color: constants.primaryText, marginBottom: 10, textAlign: 'center', letterSpacing: 0.1 }}>Verify your CloudStore email</Text>
+          <Text style={{ fontFamily: 'Inter_400Regular', fontSize: 16, color: constants.secondaryText, marginBottom: 18, textAlign: 'center', letterSpacing: 0.1 }}>Enter the 6-digit verification code sent to your email address.</Text>
           <View style={{ width: '100%', alignItems: 'center', justifyContent: 'center' }}>
             <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', marginBottom: 32, marginTop: 16, alignSelf: 'center' }}>
               {code.map((digit, idx) => (
@@ -111,10 +111,10 @@ export default function EmailVerificationScreen({ navigation, route }) {
                   key={idx}
                   ref={inputs[idx]}
                   style={[
-                    { borderRadius: 12, paddingHorizontal: 0, paddingVertical: 12, fontSize: 24, borderWidth: 1.5, textAlign: 'center', width: 48, height: 64, fontWeight: 'bold', letterSpacing: 1, includeFontPadding: false, textAlignVertical: 'center', marginHorizontal: 2, backgroundColor: 'rgba(255,255,255,0.08)', fontFamily: 'Inter_700Bold', color: theme.text },
-                    { borderColor: theme.border },
-                    digit && { borderColor: theme.primary, backgroundColor: theme.primaryLight },
-                    focusedInput === idx && { borderColor: theme.primary }
+                    { borderRadius: 12, paddingHorizontal: 0, paddingVertical: 12, fontSize: 24, borderWidth: 1.5, textAlign: 'center', width: 48, height: 64, fontWeight: 'bold', letterSpacing: 1, includeFontPadding: false, textAlignVertical: 'center', marginHorizontal: 2, backgroundColor: 'rgba(255,255,255,0.08)', fontFamily: 'Inter_700Bold', color: constants.primaryText },
+                    { borderColor: constants.glassBorder },
+                    digit && { borderColor: constants.accent, backgroundColor: constants.accent + '20' },
+                    focusedInput === idx && { borderColor: constants.accent }
                   ]}
                   value={digit}
                   onChangeText={text => handleChange(text, idx)}
@@ -130,13 +130,13 @@ export default function EmailVerificationScreen({ navigation, route }) {
               ))}
             </View>
           </View>
-          <TouchableOpacity style={{ borderRadius: 18, paddingVertical: 16, paddingHorizontal: 32, width: '100%', alignItems: 'center', backgroundColor: theme.primary, shadowOpacity: 0.10, shadowRadius: 8, shadowOffset: { width: 0, height: 2 }, elevation: 2, marginTop: 8 }} activeOpacity={0.85} onPress={handleVerify} disabled={loading}>
-            {loading ? <ActivityIndicator color={theme.textInverse} /> : <Text style={{ color: theme.textInverse, fontFamily: 'Inter_700Bold', fontSize: 17, textAlign: 'center' }}>Verify Email</Text>}
+          <TouchableOpacity style={{ borderRadius: 18, paddingVertical: 16, paddingHorizontal: 32, width: '100%', alignItems: 'center', backgroundColor: constants.accent, shadowOpacity: 0.10, shadowRadius: 8, shadowOffset: { width: 0, height: 2 }, elevation: 2, marginTop: 8 }} activeOpacity={0.85} onPress={handleVerify} disabled={loading}>
+            {loading ? <ActivityIndicator color={constants.primaryText} /> : <Text style={{ color: constants.primaryText, fontFamily: 'Inter_700Bold', fontSize: 17, textAlign: 'center' }}>Verify Email</Text>}
           </TouchableOpacity>
         </BlurView>
         {loading && (
           <View style={{ ...StyleSheet.absoluteFillObject, alignItems: 'center', justifyContent: 'center', zIndex: 10 }}>
-            <ActivityIndicator size="large" color={theme.primary} />
+            <ActivityIndicator size="large" color={constants.accent} />
           </View>
         )}
         <CustomPrompt

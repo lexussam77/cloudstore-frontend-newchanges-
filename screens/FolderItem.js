@@ -66,15 +66,47 @@ export default function FolderItem({ item, onMenuPress, onPress }) {
           width: 64,
           height: 64,
           borderRadius: 20,
-          backgroundColor: constants.accent + '20',
+          backgroundColor: '#3b82f6' + '15',
           alignItems: 'center',
           justifyContent: 'center',
           marginTop: 20,
           marginBottom: 16,
           borderWidth: 1.5,
-          borderColor: constants.accent + '40'
+          borderColor: '#3b82f6' + '30'
         }}>
-          <Feather name="folder" size={32} color={constants.accent} />
+          {/* Custom Blue Folder Icon */}
+          <View style={{ position: 'relative' }}>
+            {/* Folder Base */}
+            <View style={{
+              width: 36,
+              height: 28,
+              backgroundColor: '#3b82f6',
+              borderRadius: 4,
+              borderTopLeftRadius: 8,
+              borderTopRightRadius: 8,
+            }} />
+            {/* Folder Tab */}
+            <View style={{
+              position: 'absolute',
+              top: -6,
+              left: 2,
+              width: 16,
+              height: 8,
+              backgroundColor: '#3b82f6',
+              borderTopLeftRadius: 4,
+              borderTopRightRadius: 4,
+            }} />
+            {/* Folder Highlight */}
+            <View style={{
+              position: 'absolute',
+              top: 2,
+              left: 2,
+              right: 2,
+              height: 2,
+              backgroundColor: '#60a5fa',
+              borderRadius: 1,
+            }} />
+          </View>
         </View>
 
         {/* Folder Info */}
